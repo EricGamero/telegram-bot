@@ -1,0 +1,6 @@
+import './Components/logo.js'
+import './Components/menu.js'
+import './Components/header.js'
+import './Components/main.js'
+import './Components/table.js'
+import './Components/form.js'

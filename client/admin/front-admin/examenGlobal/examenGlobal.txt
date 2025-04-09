@@ -1,0 +1,6 @@
+1.siSolucionadoNoEntendido Estaba haciendo en casa el examen global, la parte del HTML, y estaba intentando centrar horizontalmente (horizontalmente de derecha a izquierda, verticalmente es de arriba a abajo, es un lío, espero que te acuerdes de la diferencia, si ahora no lo entiendes leyendo esto, vuelve a repasarlo o pregunta a chat porfa) un div el cual su padre tenía display:flex flex-direction:column poniéndole justify-content:center que en teoría es para centar horizontalmente y align-ítems:center para vertical, pues por lo visto si su padre tiene el flexdirection column pues se invierten
+
+	2.NoSolucionadoNoEntendido Pues me he rallado con el tema del align-tiems:center porque			la teoría de que es para centrar verticalmente esta ahí, pero no lo entiendo ni				mecánicamente ni su lógica. Lo primero es mecánicamente y por eso le he preguntado a GPT:
+	"pero como funciona el align items, osea con que lo centra, porque no va a poner el div a la 	misma altura que el padre ¿no?" claro si centra horizontalmente tiene sentido aunque este		abajo de su padre, pero el align ítems al ser vertical como lo centra?
+		
+3.NoSolucionadoNoEntendido Pues también me he rallado con el tema tamaños porque 
