@@ -1,29 +1,29 @@
 class SubscriptionForm extends HTMLElement {
-  constructor() {
-      super();
-      this.shadow = this.attachShadow({ mode: 'open' });
-      this.data = {}
+  constructor () {
+    super()
+    this.shadow = this.attachShadow({ mode: 'open' })
+    this.data = {}
   }
 
-  async connectedCallback() {
+  async connectedCallback () {
     await this.loadData()
     await this.render()
-  } 
+  }
 
-  loadData() {
+  loadData () {
     this.data = {
-      explanationTitle: "Promote a new product or service",
-      explanationInfo: "star your business today with a great and strong landing page mado to enchance the marketers workflow.",
-      explanationFeatured: "subscripción por un año",
-      infoAreaTitle: "Empieza a usarlo",
-      infoAreaSubtitle: "Te enviaremos un correo electrónico con las instrucciones para que puedas comenzar a utilizar nuestro bot.",
-      buttonText: "Suscribirme"
+      explanationTitle: 'Promote a new product or service',
+      explanationInfo: 'star your business today with a great and strong landing page mado to enchance the marketers workflow.',
+      explanationFeatured: 'subscripción por un año',
+      infoAreaTitle: 'Empieza a usarlo',
+      infoAreaSubtitle: 'Te enviaremos un correo electrónico con las instrucciones para que puedas comenzar a utilizar nuestro bot.',
+      buttonText: 'Suscribirme'
     }
   }
 
-  render() {
+  render () {
     this.shadow.innerHTML =
-    /*html*/`
+    /* html */`
     <style>
 
       *{
@@ -278,4 +278,4 @@ class SubscriptionForm extends HTMLElement {
   }
 }
 
-customElements.define("subscription-form-component", SubscriptionForm);
+customElements.define('subscription-form-component', SubscriptionForm)
