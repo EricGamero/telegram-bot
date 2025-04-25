@@ -4,7 +4,6 @@ exports.create = (req, res) => {
 }
 
 exports.findAll = (req, res) => {
-  console.log(req.userLanguage)
   res.send('GET request to the homepage')
 }
 

@@ -3,9 +3,11 @@ const app = express()
 const errorHandler = require('./middlewares/error-handler')
 const routes = require('./routes')
 const userAgentMiddleware = require('./middlewares/user-agent')
+const userTrackingMiddleware = require('./middlewares/user-tracking')
 
 app.use(userAgentMiddleware)
 app.use(express.json({ limit: '10mb', extended: true }))
+app.use(userTrackingMiddleware)
 
 app.use('/api', routes)
 app.use(errorHandler)
