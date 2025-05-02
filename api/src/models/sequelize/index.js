@@ -55,4 +55,4 @@ sequelizeDb.sequelize = sequelize
 sequelizeDb.Sequelize = Sequelize
 
 module.exports = sequelizeDb
-// exporta index.js
+// exporta index.js para ser utilizado por los controladores
