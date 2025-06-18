@@ -1,16 +1,15 @@
 class Table extends HTMLElement {
-  constructor() {
-    super();
-    this.shadow = this.attachShadow({ mode: 'open' });
+  constructor () {
+    super()
+    this.shadow = this.attachShadow({ mode: 'open' })
   }
 
-  async connectedCallback() {
-    await this.loadData();
-    await this.render();
-
+  async connectedCallback () {
+    await this.loadData()
+    await this.render()
   }
 
-  loadData() {
+  loadData () {
     this.data = [
       {
         name: 'Carlos',
@@ -31,11 +30,11 @@ class Table extends HTMLElement {
         updatedAt: '2024-04-22'
       }
     ]
-  }  
+  }
 
-  async render() {
-    this.shadow.innerHTML = 
-    /*html*/
+  async render () {
+    this.shadow.innerHTML =
+    /* html */
 
       `
     <style>
@@ -122,7 +121,6 @@ class Table extends HTMLElement {
     </section>
       `
     this.data.forEach(user => {
-      
       const usersContainer = this.shadow.querySelector('.filtered-users')
       const userContainer = document.createElement('div')
       userContainer.classList.add('filtered-user')
@@ -131,7 +129,7 @@ class Table extends HTMLElement {
       const barContainer = document.createElement('div')
       barContainer.classList.add('filtered-user-bar')
       userContainer.appendChild(barContainer)
-          
+
       const buttonsContainer = document.createElement('div')
       buttonsContainer.classList.add('filtered-user-buttons')
       barContainer.appendChild(buttonsContainer)
@@ -150,9 +148,9 @@ class Table extends HTMLElement {
 
       const contentContainer = document.createElement('div')
       contentContainer.classList.add('filtered-user-content')
-      userContainer.appendChild(contentContainer) 
-          
-      const contentUl = document.createElement ('ul')
+      userContainer.appendChild(contentContainer)
+
+      const contentUl = document.createElement('ul')
       contentContainer.appendChild(contentUl)
 
       const translations = {
@@ -160,17 +158,17 @@ class Table extends HTMLElement {
         email: 'Email',
         createdAt: 'Fecha de creación',
         updatedAt: 'Fecha de actualización'
-      };
+      }
 
       Object.keys(user).forEach(key => {
-        const contentLi = document.createElement('li');
-        contentLi.textContent = `${key.charAt(0).toUpperCase() + key.slice(1)}: ${user[key]}`;
-        contentUl.appendChild(contentLi);
+        const contentLi = document.createElement('li')
+        contentLi.textContent = `${key.charAt(0).toUpperCase() + key.slice(1)}: ${user[key]}`
+        contentUl.appendChild(contentLi)
 
-        const label = translations[key] || key.charAt(0).toUpperCase() + key.slice(1);
-        contentLi.textContent = `${label}: ${user[key]}`;
-      });
+        const label = translations[key] || key.charAt(0).toUpperCase() + key.slice(1)
+        contentLi.textContent = `${label}: ${user[key]}`
+      })
     })
   }
 }
-customElements.define("table-component", Table)
+customElements.define('table-component', Table)
