@@ -187,6 +187,27 @@ class Table extends HTMLElement {
         contentLi.textContent = `${label}: ${element[key]}`
       })
     })
+    this.renderButtons()
+  }
+
+  renderButtons () {
+    this.shadow.querySelector('.table').addEventListener('click', event => {
+      if (event.target.closest('.edit-button')) {
+        const element = event.target.closest('.edit-button')
+        const id = element.dataset.id
+      }
+
+      if (event.target.closest('.delete-button')) {
+        const element = event.target.closest('.delete-button')
+        const id = element.dataset.id
+
+        document.dispatchEvent(new CustomEvent('showDeleteModal', {
+          detail: {
+
+          }
+        }))
+      }
+    })
   }
 }
 customElements.define('table-component', Table)

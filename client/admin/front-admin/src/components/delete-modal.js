@@ -2,11 +2,18 @@ class DeleteModal extends HTMLElement {
   constructor () {
     super()
     this.attachShadow({ mode: 'open' })
+
+    document.addEventListener('showDeleteModal', this.showDeleteModal.bind(this))
   }
 
-  connectedCallback () {
-    this.render()
+  async connectedCallback () {
+    await this.render()
     this.setupListeners()
+  }
+
+  showDeleteModal (event) {
+    const overlay = this.shadowRoot.querySelector('.overlay')
+    overlay.classList.add('active')
   }
 
   render () {
@@ -86,7 +93,7 @@ class DeleteModal extends HTMLElement {
       <div class="overlay">
         <div class="modal">
           <div class="modal-text">
-            <span>¿Deseas borrar la entrada?</span>
+            <span>¿Deseas borrar el elemento?</span>
           </div> 
           <div class="modal-buttons">
             <div class="confirm-modal-button">
