@@ -9,27 +9,21 @@ class Table extends HTMLElement {
     await this.render()
   }
 
-  loadData () {
-    this.data = [
-      {
-        name: 'Carlos',
-        email: 'carlossedagambin@gmail.com',
-        createdAt: '2024-04-22',
-        updatedAt: '2024-04-22'
-      },
-      {
-        name: 'Carlos',
-        email: 'carlossedagambin@gmail.com',
-        createdAt: '2024-04-22',
-        updatedAt: '2024-04-22'
-      },
-      {
-        name: 'Carlos',
-        email: 'carlossedagambin@gmail.com',
-        createdAt: '2024-04-22',
-        updatedAt: '2024-04-22'
+  async loadData () {
+    try {
+      const response = await fetch('/api/admin/users')
+
+      if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.statusText}`)
       }
-    ]
+
+      this.data = await response.json()
+
+      console.log(this.data)
+    } catch (error) {
+      console.error('Error loading data:', error)
+      this.data = []
+    }
   }
 
   async render () {
@@ -106,6 +100,22 @@ class Table extends HTMLElement {
         padding:0.2rem;
       }  
 
+      .table{
+        min-height: 70vh;
+        max-height: 70vh;
+        overflow-y: scroll;
+      }
+
+     .table::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      .table::-webkit-scrollbar-thumb {
+        background: hsl(271, 76%, 53%);
+        border-radius: 4px;
+      }
+
     </style>
 
     <section class="table">
@@ -119,27 +129,35 @@ class Table extends HTMLElement {
         <span>1 registro en total, mostrando 10 por página<span>
       </div>
     </section>
+
+    
       `
-    this.data.forEach(user => {
-      const usersContainer = this.shadow.querySelector('.filtered-users')
-      const userContainer = document.createElement('div')
-      userContainer.classList.add('filtered-user')
-      usersContainer.appendChild(userContainer)
+    this.data.rows.forEach(element => {
+      const elementsContainer = this.shadow.querySelector('.filtered-users')
+      const elementContainer = document.createElement('div')
+      elementContainer.classList.add('filtered-user')
+      elementsContainer.appendChild(elementContainer)
 
       const barContainer = document.createElement('div')
       barContainer.classList.add('filtered-user-bar')
-      userContainer.appendChild(barContainer)
+      elementContainer.appendChild(barContainer)
 
-      const buttonsContainer = document.createElement('div')
-      buttonsContainer.classList.add('filtered-user-buttons')
-      barContainer.appendChild(buttonsContainer)
+      const editButtonContainer = document.createElement('div')
+      editButtonContainer.classList.add('edit-button')
+      editButtonContainer.dataset.id = element.id
+      barContainer.appendChild(editButtonContainer)
 
-      buttonsContainer.innerHTML = `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+      editButtonContainer.innerHTML = `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
       <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M8.29289 3.70711L1 11V15H5L12.2929 7.70711L8.29289 3.70711Z" fill="#000000">
       </path> <path d="M9.70711 2.29289L13.7071 6.29289L15.1716 4.82843C15.702 4.29799 16 3.57857 16 2.82843C16 1.26633 14.7337 0 13.1716 0C12.4214 0 11.702 0.297995 11.1716 0.828428L9.70711 2.29289Z"
-      fill="#000000"></path> </g></svg>
+      fill="#000000"></path> </g></svg>`
 
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+      const deleteButtonContainer = document.createElement('div')
+      deleteButtonContainer.classList.add('delete-button')
+      deleteButtonContainer.dataset.id = element.id
+      barContainer.appendChild(deleteButtonContainer)
+
+      deleteButtonContainer.innerHTML = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
       <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> 
       <path d="M4 7H20" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> 
       <path d="M6 10L7.70141 19.3578C7.87432 20.3088 8.70258 21 9.66915 21H14.3308C15.2974 21 16.1257 20.3087 16.2986 19.3578L18 10" stroke="#000000" stroke-width="2" stroke-linecap="round" 
@@ -148,7 +166,7 @@ class Table extends HTMLElement {
 
       const contentContainer = document.createElement('div')
       contentContainer.classList.add('filtered-user-content')
-      userContainer.appendChild(contentContainer)
+      elementContainer.appendChild(contentContainer)
 
       const contentUl = document.createElement('ul')
       contentContainer.appendChild(contentUl)
@@ -160,13 +178,13 @@ class Table extends HTMLElement {
         updatedAt: 'Fecha de actualización'
       }
 
-      Object.keys(user).forEach(key => {
+      Object.keys(element).forEach(key => {
         const contentLi = document.createElement('li')
-        contentLi.textContent = `${key.charAt(0).toUpperCase() + key.slice(1)}: ${user[key]}`
+        contentLi.textContent = `${key.charAt(0).toUpperCase() + key.slice(1)}: ${element[key]}`
         contentUl.appendChild(contentLi)
 
         const label = translations[key] || key.charAt(0).toUpperCase() + key.slice(1)
-        contentLi.textContent = `${label}: ${user[key]}`
+        contentLi.textContent = `${label}: ${element[key]}`
       })
     })
   }
