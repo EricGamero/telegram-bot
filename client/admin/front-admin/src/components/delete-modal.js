@@ -1,23 +1,30 @@
+import { store } from '../redux/store.js'
+import { refreshTable } from '../redux/crud-slice.js'
+
 class DeleteModal extends HTMLElement {
   constructor () {
     super()
-    this.attachShadow({ mode: 'open' })
-
+    this.shadow = this.attachShadow({ mode: 'open' })
+    this.endpoint = ''
+    this.tableEndpoint = ''
     document.addEventListener('showDeleteModal', this.showDeleteModal.bind(this))
   }
 
   async connectedCallback () {
-    await this.render()
-    this.setupListeners()
+    this.render()
   }
 
   showDeleteModal (event) {
+    const { endpoint, elementId } = event.detail
+    this.tableEndpoint = endpoint
+    this.endpoint = `${endpoint}/${elementId}`
     const overlay = this.shadowRoot.querySelector('.overlay')
     overlay.classList.add('active')
   }
 
   render () {
-    this.shadowRoot.innerHTML = /* html */`
+    this.shadowRoot.innerHTML =
+      /* html */`
       <style>
         
         * {
@@ -106,20 +113,49 @@ class DeleteModal extends HTMLElement {
         </div>
       </div>    
     `
+
+    this.renderButtons()
   }
 
-  setupListeners () {
-    const overlay = this.shadowRoot.querySelector('.overlay')
-    const noButton = this.shadowRoot.querySelector('.cancel-button')
-    const yesButton = this.shadowRoot.querySelector('.confirm-button')
+  renderButtons () {
+    const aceptedButton = this.shadow.querySelector('.confirm-button')
+    const deniedButton = this.shadow.querySelector('.cancel-button')
 
-    noButton.addEventListener('click', () => {
-      overlay.classList.remove('active')
+    aceptedButton.addEventListener('click', async () => {
+      try {
+        const response = await fetch(this.endpoint, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+
+        if (!response.ok) {
+          throw new Error('Error al eliminar el elemento')
+        }
+
+        document.dispatchEvent(new CustomEvent('notice', {
+          detail: {
+            message: 'Elemento eliminado correctamente',
+            type: 'success'
+          }
+        }))
+
+        this.shadow.querySelector('.overlay').classList.remove('active')
+      } catch (error) {
+        document.dispatchEvent(new CustomEvent('notice', {
+          detail: {
+            message: 'No se han podido eleminar el dato',
+            type: 'error'
+          }
+        }))
+
+        this.shadow.querySelector('.overlay').classList.remove('active')
+      }
     })
 
-    yesButton.addEventListener('click', () => {
-      // Aquí irá la lógica para eliminar si se confirma
-      overlay.classList.remove('active')
+    deniedButton.addEventListener('click', event => {
+      this.shadow.querySelector('.overlay').classList.remove('active')
     })
   }
 }

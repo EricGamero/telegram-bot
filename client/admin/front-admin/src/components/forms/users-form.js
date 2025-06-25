@@ -1,12 +1,26 @@
-class Form extends HTMLElement {
+import isEqual from 'lodash-es/isEqual'
+import { store } from '../../redux/store.js'
+import { refreshTable } from '../../redux/crud-slice.js'
+class UserForm extends HTMLElement {
   constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
+    this.endpoint = '/api/admin/users'
+    this.unsubscribe = null
+    this.formElementData = null
   }
 
-  async connectedCallback () {
-    this.loadData()
-    await this.render()
+  connectedCallback () {
+    this.unsubscribe = store.subscribe(() => {
+      const currentState = store.getState()
+
+      if (currentState.crud.formElement && currentState.crud.formElement.endPoint === this.endpoint && !isEqual(this.formElementData, currentState.crud.formElement.data)) {
+        this.formElementData = currentState.crud.formElement.data
+        this.showElement(this.formElementData)
+      }
+    })
+
+    this.render()
   }
 
   loadData () {
@@ -101,7 +115,7 @@ class Form extends HTMLElement {
           </div>
 
           <div class="form-bar-buttons">
-            <div class="form-bar-clean-svg">
+            <div class="clean-button">
               <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
               viewBox="0 0 32 32" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
               <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> 
@@ -120,6 +134,7 @@ class Form extends HTMLElement {
 
         <div class="fields-section">
           <form>
+          <input type="hidden" name="id">
             <div class="form-fields">
               <div class="form-element">
                 <div class="form-element-label">
@@ -142,10 +157,10 @@ class Form extends HTMLElement {
         </div>
       </section>
     `
-    this.renderSaveButton()
+    this.renderButtons()
   }
 
-  renderSaveButton () {
+  renderButtons () {
     this.shadow.querySelector('.save-button').addEventListener('click', async event => {
       event.preventDefault()
 
@@ -157,10 +172,13 @@ class Form extends HTMLElement {
         formDataJson[key] = value !== '' ? value : null
       }
 
-      try {
-        const method = 'POST'
+      const id = this.shadow.querySelector('[name="id"]').value
+      const endpoint = id ? `${this.endpoint}/${id}` : this.endpoint
+      const method = id ? 'PUT' : 'POST'
+      delete formDataJson.id
 
-        const response = await fetch('/api/admin/users', {
+      try {
+        const response = await fetch(endpoint, {
           method,
           headers: {
             'Content-Type': 'application/json'
@@ -172,7 +190,8 @@ class Form extends HTMLElement {
           throw new Error(`Error al guardar los datos: ${response.statusText}`)
         }
 
-        const data = await response.json()
+        store.dispatch(refreshTable(this.endpoint))
+        this.resetForm()
 
         document.dispatchEvent(new CustomEvent('notice', {
           detail: {
@@ -187,10 +206,28 @@ class Form extends HTMLElement {
             type: 'error'
           }
         }))
-        console.error('Error al guardar los datos:', error)
+      }
+    })
+
+    this.shadow.querySelector('.clean-button').addEventListener('click', async event => {
+      this.resetForm()
+    })
+  }
+
+  showElement (data) {
+    Object.entries(data).forEach(([key, value]) => {
+      if (this.shadow.querySelector(`[name="${key}"]`)) {
+        this.shadow.querySelector(`[name="${key}"]`).value = value
       }
     })
   }
+
+  resetForm () {
+    const form = this.shadow.querySelector('form')
+    form.reset()
+    this.shadow.querySelector('[name="id"]').value = ''
+    this.formElementData = null
+  }
 }
 
-customElements.define('form-component', Form)
+customElements.define('users-form-component', UserForm)
