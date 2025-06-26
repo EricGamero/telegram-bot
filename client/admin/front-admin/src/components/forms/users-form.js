@@ -74,7 +74,7 @@ class UserForm extends HTMLElement {
         
         .form-bar-tabs{
           padding:0.6rem;
-          background-color:purple;
+          background-color: yellow;
         }
 
         .form-bar-buttons{

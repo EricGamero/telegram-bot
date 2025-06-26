@@ -15,11 +15,12 @@ class Main extends HTMLElement {
       `
     <style>
 
+
       main{
         display:grid;
         grid-template-columns: 1fr 2fr;
         gap: 1.8rem;
-        
+        padding: 0 1rem;
       }
         
     </style>

@@ -18,7 +18,8 @@ class Header extends HTMLElement {
       header{
         display:flex;
         align-items:center;
-        justify-content:space-between
+        justify-content:space-between;
+        padding: 0 1rem;
       }
         
     </style>
