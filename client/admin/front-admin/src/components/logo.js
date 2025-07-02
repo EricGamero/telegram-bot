@@ -1,23 +1,23 @@
 class Logo extends HTMLElement {
-  constructor() {
-    super();
-    this.shadow = this.attachShadow({ mode: 'open' });
-    this.data = [];
+  constructor () {
+    super()
+    this.shadow = this.attachShadow({ mode: 'open' })
+    this.data = []
   }
 
-  async connectedCallback() {
-    this.loadData();
-    this.render();
+  async connectedCallback () {
+    this.loadData()
+    this.render()
   }
 
-  loadData() {
-    this.data = { title: "Pedidos"}
+  loadData () {
+    this.data = { title: 'Panel de administración' }
   }
 
-  render() {
+  render () {
     this.shadow.innerHTML =
-     /*html*/ 
-        
+      /* html */
+
         `
       <style>
 
@@ -39,8 +39,8 @@ class Logo extends HTMLElement {
       <div class="title">
         <p>${this.data.title}</p>
       </div>
-    `;
+    `
   }
 }
 
-customElements.define("logo-component", Logo);
+customElements.define('logo-component', Logo)

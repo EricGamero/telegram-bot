@@ -1,11 +1,11 @@
 import { store } from '../../redux/store.js'
 import { setFilterQuery } from '../../redux/crud-slice.js'
 
-class FilterModal extends HTMLElement {
+class EventCategoryFilter extends HTMLElement {
   constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
-    this.endpoint = '/api/admin/users'
+    this.endpoint = '/api/admin/event-categories'
     document.addEventListener('showFilterModal', this.showFilterModal.bind(this))
   }
 
@@ -48,7 +48,7 @@ class FilterModal extends HTMLElement {
 
 
         .modal {
-          background: rgba(255, 255, 255, 0.88); /* panel claro semitransparente */
+          background: #6B7280; /* panel claro semitransparente */
           backdrop-filter: blur(12px);
           border-radius: 16px;
           box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
@@ -122,14 +122,6 @@ class FilterModal extends HTMLElement {
                   <input type="text" name="name">
                 </div>  
               </div>
-              <div class="form-element">
-                <div class="form-element-label">
-                  <label>Email</label>
-                </div>
-                <div class="form-element-input">
-                  <input type="text" name="email">
-                </div>  
-              </div> 
             </form>
           </div>
           <div class="modal-buttons">
@@ -202,4 +194,4 @@ class FilterModal extends HTMLElement {
   }
 }
 
-customElements.define('filter-modal-component', FilterModal)
+customElements.define('event-categories-filter-component', EventCategoryFilter)
