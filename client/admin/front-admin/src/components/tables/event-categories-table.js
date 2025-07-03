@@ -307,11 +307,13 @@ class EventCategoryTable extends HTMLElement {
 
   renderButtons () {
     this.shadow.querySelector('.table').addEventListener('click', async event => {
-      document.dispatchEvent(new CustomEvent('showFilterModal', {
-        detail: {
-          endpoint: this.endpoint
-        }
-      }))
+      if (event.target.closest('.filter-button')) {
+        document.dispatchEvent(new CustomEvent('showFilterModal', {
+          detail: {
+            endpoint: this.endpoint
+          }
+        }))
+      }
 
       if (event.target.closest('.edit-button')) {
         const element = event.target.closest('.edit-button')
