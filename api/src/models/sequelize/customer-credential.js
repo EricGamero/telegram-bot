@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('UserCredential',
+  const Model = sequelize.define('CustomerCredential',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -7,7 +7,7 @@ module.exports = function (sequelize, DataTypes) {
         primaryKey: true,
         allowNull: false
       },
-      userId: {
+      customerId: {
         type: DataTypes.INTEGER,
         allowNull: false
       },
@@ -61,13 +61,14 @@ module.exports = function (sequelize, DataTypes) {
       }
     }, {
       sequelize,
-
-      tableName: 'user_credentials',
-
+      // modelo se conecta a base dato conexión
+      tableName: 'customer_credentials',
+      // a que tabla de la base datos debe apuntar el modelo
       timestamps: true,
-
+      // cada vez que guarde o actualize un dato registre la fecha y la hora en estos campos createdat updatedat a
       paranoid: true,
-
+      // que utilize el modo paranoico es no borrar datos por el campo deletedat y así solo te enseña los datos que no tienen el modo
+      // paranoico activaod
       indexes: [
         {
           name: 'PRIMARY',

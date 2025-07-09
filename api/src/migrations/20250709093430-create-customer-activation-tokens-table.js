@@ -3,27 +3,27 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('bots', {
+    await queryInterface.createTable('customer_activation_tokens', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false
       },
-      platform: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      name: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      description: {
-        type: Sequelize.TEXT,
+      customerId: {
+        type: Sequelize.INTEGER,
         allowNull: false
       },
       token: {
         type: Sequelize.STRING,
+        allowNull: false
+      },
+      expirationDate: {
+        type: Sequelize.DATE,
+        allowNull: false
+      },
+      used: {
+        type: Sequelize.BOOLEAN,
         allowNull: false
       },
       createdAt: {
@@ -41,6 +41,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('user_credentials')
+    await queryInterface.dropTable('customer_activation_tokens')
   }
 }

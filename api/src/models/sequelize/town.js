@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('UserCredential',
+  const Model = sequelize.define('Town',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -7,41 +7,17 @@ module.exports = function (sequelize, DataTypes) {
         primaryKey: true,
         allowNull: false
       },
-      userId: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-      },
-      email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-        validate: {
-          isEmail: {
-            msg: 'Debe ser un e-mail válido'
-          },
-          notNull: {
-            msg: 'Por favor, rellena el campo "Email".'
-          },
-          notEmpty: {
-            msg: 'Por favor, rellena el campo "Email".'
-          }
-        }
-      },
-      password: {
+      name: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
           notNull: {
-            msg: 'Por favor, rellena el campo "Contraseña".'
+            msg: 'Por favor, rellena el campo "Nombre".'
           },
           notEmpty: {
-            msg: 'Por favor, rellena el campo "Contraseña".'
+            msg: 'Por favor, rellena el campo "Nombre".'
           }
         }
-      },
-      lastPasswordChange: {
-        type: DataTypes.STRING,
-        allowNull: false
       },
       createdAt: {
         type: DataTypes.DATE,
@@ -61,13 +37,9 @@ module.exports = function (sequelize, DataTypes) {
       }
     }, {
       sequelize,
-
-      tableName: 'user_credentials',
-
+      tableName: 'towns',
       timestamps: true,
-
       paranoid: true,
-
       indexes: [
         {
           name: 'PRIMARY',

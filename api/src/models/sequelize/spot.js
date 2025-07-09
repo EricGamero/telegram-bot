@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('UserCredential',
+  const Model = sequelize.define('Spot',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -7,40 +7,36 @@ module.exports = function (sequelize, DataTypes) {
         primaryKey: true,
         allowNull: false
       },
-      userId: {
+      townId: {
         type: DataTypes.INTEGER,
         allowNull: false
       },
-      email: {
+      name: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
-        validate: {
-          isEmail: {
-            msg: 'Debe ser un e-mail válido'
-          },
-          notNull: {
-            msg: 'Por favor, rellena el campo "Email".'
-          },
-          notEmpty: {
-            msg: 'Por favor, rellena el campo "Email".'
-          }
-        }
       },
-      password: {
+      description: {
+        type: DataTypes.TEXT,
+        allowNull: false
+      },
+      address: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      latitude: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+      },
+      longitude: {
+        type: DataTypes.FLOAT,
+        allowNull: false
+      },
+      environment: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: {
-          notNull: {
-            msg: 'Por favor, rellena el campo "Contraseña".'
-          },
-          notEmpty: {
-            msg: 'Por favor, rellena el campo "Contraseña".'
-          }
-        }
       },
-      lastPasswordChange: {
-        type: DataTypes.STRING,
+      isActive: {
+        type: DataTypes.BOOLEAN,
         allowNull: false
       },
       createdAt: {
@@ -61,13 +57,9 @@ module.exports = function (sequelize, DataTypes) {
       }
     }, {
       sequelize,
-
-      tableName: 'user_credentials',
-
+      tableName: 'spots',
       timestamps: true,
-
       paranoid: true,
-
       indexes: [
         {
           name: 'PRIMARY',

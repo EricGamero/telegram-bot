@@ -3,25 +3,42 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('customers', {
+    await queryInterface.createTable('sent_emails', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false
       },
-      name: {
+      userType: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      email: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true
+      userId: {
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
-      birthdate: {
+      emailTemplate: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      sendAt: {
         type: Sequelize.DATE,
         allowNull: false
+      },
+      readedAt: {
+        type: Sequelize.DATE,
+        allowNull: false
+      },
+      uuid: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        validate: {
+          isUUID: {
+            args: 4,
+            msg: 'El token debe ser un UUID v4 válido.'
+          }
+        }
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -38,6 +55,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('customers')
+    await queryInterface.dropTable('sent_emails')
   }
 }

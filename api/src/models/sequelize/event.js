@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('UserCredential',
+  const Model = sequelize.define('Event',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -7,41 +7,29 @@ module.exports = function (sequelize, DataTypes) {
         primaryKey: true,
         allowNull: false
       },
-      userId: {
+      promoterId: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
       },
-      email: {
+      townId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      spotId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      categoryId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      title: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
-        validate: {
-          isEmail: {
-            msg: 'Debe ser un e-mail válido'
-          },
-          notNull: {
-            msg: 'Por favor, rellena el campo "Email".'
-          },
-          notEmpty: {
-            msg: 'Por favor, rellena el campo "Email".'
-          }
-        }
       },
-      password: {
-        type: DataTypes.STRING,
+      description: {
+        type: DataTypes.TEXT,
         allowNull: false,
-        validate: {
-          notNull: {
-            msg: 'Por favor, rellena el campo "Contraseña".'
-          },
-          notEmpty: {
-            msg: 'Por favor, rellena el campo "Contraseña".'
-          }
-        }
-      },
-      lastPasswordChange: {
-        type: DataTypes.STRING,
-        allowNull: false
       },
       createdAt: {
         type: DataTypes.DATE,
@@ -61,13 +49,9 @@ module.exports = function (sequelize, DataTypes) {
       }
     }, {
       sequelize,
-
-      tableName: 'user_credentials',
-
+      tableName: 'events',
       timestamps: true,
-
       paranoid: true,
-
       indexes: [
         {
           name: 'PRIMARY',

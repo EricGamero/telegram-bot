@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('UserCredential',
+  const Model = sequelize.define('UserActiovationToken',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -11,37 +11,18 @@ module.exports = function (sequelize, DataTypes) {
         type: DataTypes.INTEGER,
         allowNull: false
       },
-      email: {
+      token: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
-        validate: {
-          isEmail: {
-            msg: 'Debe ser un e-mail válido'
-          },
-          notNull: {
-            msg: 'Por favor, rellena el campo "Email".'
-          },
-          notEmpty: {
-            msg: 'Por favor, rellena el campo "Email".'
-          }
-        }
+        unique: true
       },
-      password: {
-        type: DataTypes.STRING,
+      expirationDate: {
+        type: DataTypes.DATE,
         allowNull: false,
-        validate: {
-          notNull: {
-            msg: 'Por favor, rellena el campo "Contraseña".'
-          },
-          notEmpty: {
-            msg: 'Por favor, rellena el campo "Contraseña".'
-          }
-        }
       },
-      lastPasswordChange: {
-        type: DataTypes.STRING,
-        allowNull: false
+      used: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
       },
       createdAt: {
         type: DataTypes.DATE,
@@ -61,11 +42,8 @@ module.exports = function (sequelize, DataTypes) {
       }
     }, {
       sequelize,
-
-      tableName: 'user_credentials',
-
+      tableName: 'user_activation_tokens',
       timestamps: true,
-
       paranoid: true,
 
       indexes: [

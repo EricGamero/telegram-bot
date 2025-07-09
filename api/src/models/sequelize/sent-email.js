@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('UserCredential',
+  const Model = sequelize.define('SentEmail',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -7,41 +7,29 @@ module.exports = function (sequelize, DataTypes) {
         primaryKey: true,
         allowNull: false
       },
+      userType: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       userId: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
       },
-      email: {
+      emailTemplate: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
-        validate: {
-          isEmail: {
-            msg: 'Debe ser un e-mail válido'
-          },
-          notNull: {
-            msg: 'Por favor, rellena el campo "Email".'
-          },
-          notEmpty: {
-            msg: 'Por favor, rellena el campo "Email".'
-          }
-        }
       },
-      password: {
-        type: DataTypes.STRING,
+      sendAt: {
+        type: DataTypes.DATE,
         allowNull: false,
-        validate: {
-          notNull: {
-            msg: 'Por favor, rellena el campo "Contraseña".'
-          },
-          notEmpty: {
-            msg: 'Por favor, rellena el campo "Contraseña".'
-          }
-        }
       },
-      lastPasswordChange: {
-        type: DataTypes.STRING,
-        allowNull: false
+      readedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
+      uuid: {
+        type: DataTypes.UUID,
+        allowNull: false,
       },
       createdAt: {
         type: DataTypes.DATE,
@@ -61,13 +49,9 @@ module.exports = function (sequelize, DataTypes) {
       }
     }, {
       sequelize,
-
-      tableName: 'user_credentials',
-
+      tableName: 'sent_emails',
       timestamps: true,
-
       paranoid: true,
-
       indexes: [
         {
           name: 'PRIMARY',

@@ -16,14 +16,6 @@ module.exports = function (sequelize, DataTypes) {
         allowNull: false,
         unique: true
       },
-      telephone: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      prefix: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
       birthdate: {
         type: DataTypes.DATE,
         allowNull: false
