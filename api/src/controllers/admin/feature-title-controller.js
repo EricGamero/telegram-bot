@@ -1,15 +1,15 @@
-const sequelizeDb = require('../../models/sequelize')
-const Town = sequelizeDb.Town
-const Op = sequelizeDb.Sequelize.Op
+const moment = require('moment')
+const mongooseDb = require('../../models/mongoose')
+const FeatureTitle = mongooseDb.FeatureTitle
 
 exports.create = async (req, res, next) => {
   try {
-    const data = await Town.create(req.body)
+    let data = await FeatureTitle.create(req.body)
+    data = data.toObject()
+    data.id = data._id
+
     res.status(200).send(data)
   } catch (err) {
-    if (err.name === 'SequelizeValidationError') {
-      err.statusCode = 422
-    }
     next(err)
   }
 }
@@ -20,33 +20,39 @@ exports.findAll = async (req, res, next) => {
     const limit = parseInt(req.query.size) || 10
     const offset = (page - 1) * limit
     const whereStatement = {}
+    whereStatement.deletedAt = { $exists: false }
 
     for (const key in req.query) {
       if (req.query[key] !== '' && req.query[key] !== 'null' && key !== 'page' && key !== 'size') {
-        whereStatement[key] = { [Op.substring]: req.query[key] }
+        whereStatement[key] = { $regex: req.query[key], $options: 'i' }
       }
     }
 
-    const condition = Object.keys(whereStatement).length > 0
-      ? { [Op.and]: [whereStatement] }
-      : {}
-    // funcion sequelize devuelve todos lso datos con paginación si no quieres paginar quitas limit offset
-    const result = await Town.findAndCountAll({
-      where: condition,
-      attributes: ['id', 'name', 'createdAt', 'updatedAt'],
-      limit,
-      offset,
-      order: [['createdAt', 'DESC']]
-    })
+    const result = await FeatureTitle.find(whereStatement)
+      .skip(offset)
+      .limit(limit)
+      .sort({ createdAt: -1 })
+      .lean()
+      .exec()
 
-    result.meta = {
-      total: result.count,
-      pages: Math.ceil(result.count / limit),
-      currentPage: page,
-      size: limit
+    const count = await FeatureTitle.countDocuments(whereStatement)
+
+    const response = {
+      rows: result.map(doc => ({
+        id: doc._id,
+        _id: undefined,
+        title: doc.title,
+        createdAt: moment(doc.createdAt).format('YYYY-MM-DD HH:mm'),
+        updatedAt: moment(doc.updatedAt).format('YYYY-MM-DD HH:mm')
+      })),
+      meta: {
+        total: count,
+        pages: Math.ceil(count / limit),
+        currentPage: page
+      }
     }
 
-    res.status(200).send(result)
+    res.status(200).send(response)
   } catch (err) {
     next(err)
   }
@@ -55,7 +61,7 @@ exports.findAll = async (req, res, next) => {
 exports.findOne = async (req, res, next) => {
   try {
     const id = req.params.id
-    const data = await Town.findByPk(id)
+    const data = await FeatureTitle.findById(id).lean().exec()
 
     if (!data) {
       const err = new Error()
@@ -64,6 +70,7 @@ exports.findOne = async (req, res, next) => {
       throw err
     }
 
+    data.id = data._id
     res.status(200).send(data)
   } catch (err) {
     next(err)
@@ -73,9 +80,9 @@ exports.findOne = async (req, res, next) => {
 exports.update = async (req, res, next) => {
   try {
     const id = req.params.id
-    const [numberRowsAffected] = await Town.update(req.body, { where: { id } })
+    const data = await FeatureTitle.findByIdAndUpdate(id, req.body, { new: true }).lean().exec()
 
-    if (numberRowsAffected !== 1) {
+    if (!data) {
       const err = new Error()
       err.message = `No se puede actualizar el elemento con la id=${id}. Tal vez no se ha encontrado.`
       err.statusCode = 404
@@ -86,10 +93,6 @@ exports.update = async (req, res, next) => {
       message: 'El elemento ha sido actualizado correctamente.'
     })
   } catch (err) {
-    if (err.name === 'SequelizeValidationError') {
-      err.statusCode = 422
-    }
-
     next(err)
   }
 }
@@ -97,9 +100,9 @@ exports.update = async (req, res, next) => {
 exports.delete = async (req, res, next) => {
   try {
     const id = req.params.id
-    const numberRowsAffected = await Town.destroy({ where: { id } })
+    const data = await FeatureTitle.findByIdAndUpdate(id, { deletedAt: new Date() })
 
-    if (numberRowsAffected !== 1) {
+    if (!data) {
       const err = new Error()
       err.message = `No se puede actualizar el elemento con la id=${id}. Tal vez no se ha encontrado.`
       err.statusCode = 404

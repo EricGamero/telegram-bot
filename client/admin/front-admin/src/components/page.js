@@ -24,7 +24,10 @@ class PageComponent extends HTMLElement {
       '/admin/usuarios': 'users.html',
       '/admin/eventos': 'events.html',
       '/admin/categorias-de-eventos': 'event-categories.html',
-      '/admin/promotores': 'promoters.html'
+      '/admin/promotores': 'promoters.html',
+      '/admin/faqs': 'faqs.html',
+      '/admin/titulos-de-funciones': 'feature-titles.html',
+      '/admin/cartas': 'cards.html'
 
     }
 

@@ -1,67 +1,60 @@
 class Cards extends HTMLElement {
-  constructor() {
-    super();
-    this.shadow = this.attachShadow({ mode: 'open' });
-    this.data = {}
+  constructor () {
+    super()
+    this.shadow = this.attachShadow({ mode: 'open' })
+    this.data = { title: '', description: '' }
   }
 
-  async connectedCallback() {
+  async connectedCallback () {
     await this.loadData()
     await this.render()
-  } 
+  }
 
-  loadData() {
-    this.data = {
-      title: 'Fácil de usar',
-      description: 'Tan simple como decir qué productos buscas, las características que te interesan y cuanto estás dispuesto a pagas. Nuestro bot se encargará de buscarlo por ti y te notificará cuando encuentre algo que se ajuste a tus preferencias.',
-      images: {
-        xs: './images/airpods/go_airpods__ed69m4vdask2_large.png',
-        sm: './images/airpods/go_airpods__ed69m4vdask2_large.png',
-        md: './images/airpods/go_airpods__ed69m4vdask2_large.png',
-        lg: './images/airpods/go_airpods__ed69m4vdask2_large.png',
-        alt: 'airpoids'
-      },
-      cards: [
-        {
-          title: 'Siri, text Rigo, "I\'m on my way"',
-          color: 'white',
-          images: {
-            xs: './images/text/go_iphone__rgcqxe88k6y6_small.png',
-            sm: './images/text/go_iphone__rgcqxe88k6y6_small.png',
-            md: './images/text/go_iphone__rgcqxe88k6y6_small.png',
-            lg: './images/text/go_iphone__rgcqxe88k6y6_small.png',
-            alt: 'iphone'
-          }
-        },
-        {
-          title: 'Siri, remind me to water plants when I get home',
-          color: 'black',
-          images: {
-            xs: './images/remind/go_tile_1__c3xn44p0q22q_large.png',
-            sm: './images/remind/go_tile_1__c3xn44p0q22q_large.png',
-            md: './images/remind/go_tile_1__c3xn44p0q22q_large.png',
-            lg: './images/remind/go_tile_1__c3xn44p0q22q_large.png',
-            alt: 'iphone'
-          }
-        },
-        {
-          title: 'Siri, text Rigo, "I\'m on my way"',
-          color: 'white',
-          images: {
-            xs: './images/helpful/go_tile_2__r3t0enbq5lea_large.jpg',
-            sm: './images/helpful/go_tile_2__r3t0enbq5lea_large.jpg',
-            md: './images/helpful/go_tile_2__r3t0enbq5lea_large.jpg',
-            lg: './images/helpful/go_tile_2__r3t0enbq5lea_large.jpg',
-            alt: 'iphone'
-          }
-        }
-      ]
+  async loadData () {
+    try {
+      const response = await fetch('/api/customer/cards', {
+        headers: { Accept: 'application/json' }
+      })
+      if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.status} ${response.statusText}`)
+      }
+
+      const raw = await response.json()
+
+      // Normaliza a un único objeto:
+      // - si viene como { title, description, ... } -> usa raw
+      // - si viene como { data: {...} }            -> usa raw.data
+      // - si viene como array [ {...} ]            -> usa el primero
+      // - si viene como { items: [ {...} ] }       -> usa el primero de items
+      const src =
+      (raw && raw.data)
+        ? raw.data
+        : (raw && Array.isArray(raw.items) && raw.items[0])
+            ? raw.items[0]
+            : (Array.isArray(raw) && raw[0])
+                ? raw[0]
+                : raw
+
+      // Asigna solo lo que te interesa (con fallback a vacío)
+      this.data = {
+        title: String(src?.title ?? ''),
+        description: String(src?.description ?? ''),
+      }
+
+      // Útil para depurar una vez: ver qué llegó
+      // console.log('payload /api/customer/cards:', raw, '→ usando:', this.data);
+    } catch (error) {
+      console.error('Error fetching cards:', error)
+      this.data = { title: '', description: '' } // nunca null
     }
   }
 
-  render() { 
+  render () {
+    const { title = '', description = '' } = this.data ?? {}
+
     this.shadow.innerHTML =
-    /*html*/`
+    /* html */`
+
     <style>
 
       img{
@@ -254,21 +247,13 @@ class Cards extends HTMLElement {
       <div class="cards-info">
         <div class="cards-title">
           <div class="cards-title-gradient">
-            <h2>${this.data.title}</h2>
+            <h2>${title}</h2>
           </div>
-          <div class="cards-image">
-            <picture>
-              <source srcset="${this.data.images.lg}" media="(min-width: 1920px)">
-              <source srcset="${this.data.images.md}" media="(min-width: 1024px)">
-              <source srcset="${this.data.images.sm}" media="(min-width: 768px)">
-              <source srcset="${this.data.images.xs}" media="(min-width: 480px)">
-              <img src="${this.data.images.xs}" alt="foto-bonito">
-            </picture>
-          </div>
+     
         </div>
         <div class="cards-description">
           <p>
-            ${this.data.description}
+            ${description}
           </p>
         </div>
       </div>
@@ -277,60 +262,59 @@ class Cards extends HTMLElement {
       </div>
     </section>
     `
-    this.data.cards.forEach(card => {
-      const cardsContainer = this.shadow.querySelector('.cards-list')
-      const cardContainer = document.createElement('div')
-      cardContainer.classList.add('card', card.color)
-      cardsContainer.appendChild(cardContainer)
+    // this.data.cards.forEach(card => {
+    //   const cardsContainer = this.shadow.querySelector('.cards-list')
+    //   const cardContainer = document.createElement('div')
+    //   cardContainer.classList.add('card', card.color)
+    //   cardsContainer.appendChild(cardContainer)
 
-      const cardTitleContainer = document.createElement('div')
-      cardTitleContainer.classList.add('card-title')
-      cardContainer.appendChild(cardTitleContainer) 
+    //   const cardTitleContainer = document.createElement('div')
+    //   cardTitleContainer.classList.add('card-title')
+    //   cardContainer.appendChild(cardTitleContainer)
 
-      const titleParts = card.title.split(',')
+    //   const titleParts = card.title.split(',')
 
-      const cardTitle = document.createElement('h4')
-      cardTitle.textContent = titleParts[1]
-      cardTitleContainer.appendChild(cardTitle)
+    //   const cardTitle = document.createElement('h4')
+    //   cardTitle.textContent = titleParts[1]
+    //   cardTitleContainer.appendChild(cardTitle)
 
-      const titleSpan = document.createElement('span')
-      titleSpan.textContent = titleParts[0] 
-      cardTitle.appendChild(titleSpan)
+    //   const titleSpan = document.createElement('span')
+    //   titleSpan.textContent = titleParts[0]
+    //   cardTitle.appendChild(titleSpan)
 
-      const cardImageContainer = document.createElement('div')
-      cardImageContainer.classList.add('card-image')
-      cardContainer.appendChild(cardImageContainer)
+    //   const cardImageContainer = document.createElement('div')
+    //   cardImageContainer.classList.add('card-image')
+    //   cardContainer.appendChild(cardImageContainer)
 
-      const imagePicture = document.createElement('picture')
-      cardImageContainer.appendChild(imagePicture)
-      
-      const sourceLg = document.createElement('source')
-      sourceLg.srcset = card.images.lg
-      sourceLg.media = "(min-width: 1920px)"
-      imagePicture.appendChild(sourceLg)
+    //   const imagePicture = document.createElement('picture')
+    //   cardImageContainer.appendChild(imagePicture)
 
-      const sourceMd = document.createElement('source')
-      sourceMd.srcset = card.images.md
-      sourceMd.media = "(min-width: 1024px)"
-      imagePicture.appendChild(sourceMd)
+    //   const sourceLg = document.createElement('source')
+    //   sourceLg.srcset = card.images.lg
+    //   sourceLg.media = '(min-width: 1920px)'
+    //   imagePicture.appendChild(sourceLg)
 
-      const sourceSm = document.createElement('source')
-      sourceSm.srcset = card.images.sm
-      sourceSm.media = "(min-width: 768px)"
-      imagePicture.appendChild(sourceSm)
+    //   const sourceMd = document.createElement('source')
+    //   sourceMd.srcset = card.images.md
+    //   sourceMd.media = '(min-width: 1024px)'
+    //   imagePicture.appendChild(sourceMd)
 
-      const sourceXs = document.createElement('source')
-      sourceXs.srcset = card.images.xs
-      sourceXs.media = "(min-width: 480px)"
-      imagePicture.appendChild(sourceXs)
+    //   const sourceSm = document.createElement('source')
+    //   sourceSm.srcset = card.images.sm
+    //   sourceSm.media = '(min-width: 768px)'
+    //   imagePicture.appendChild(sourceSm)
 
-      const img = document.createElement('img')
-      img.src = card.images.xs
-      img.alt = card.images.alt
-      imagePicture.appendChild(img)
-    }); 
-  }  
+    //   const sourceXs = document.createElement('source')
+    //   sourceXs.srcset = card.images.xs
+    //   sourceXs.media = '(min-width: 480px)'
+    //   imagePicture.appendChild(sourceXs)
+
+    //   const img = document.createElement('img')
+    //   img.src = card.images.xs
+    //   img.alt = card.images.alt
+    //   imagePicture.appendChild(img)
+    // })
+  }
 }
 
-customElements.define('cards-component', Cards);
-
+customElements.define('cards-component', Cards)

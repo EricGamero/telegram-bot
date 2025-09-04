@@ -16,6 +16,6 @@ module.exports = (mongoose) => {
     { timestamps: true }
   )
 
-  const Customer = mongoose.model('Customer', schema, 'customers')
-  return Customer
+  const Event = mongoose.model('Event', schema, 'events')
+  return Event
 }

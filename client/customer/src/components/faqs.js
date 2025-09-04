@@ -1,37 +1,33 @@
 class Faqs extends HTMLElement {
-
-  constructor() {
+  constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
-
     this.data = []
   }
 
-  async connectedCallback() {
+  async connectedCallback () {
     await this.loadData()
     await this.render()
   }
 
-  loadData() {
-    this.data = [
-      {
-        title: "¿Qué elementos principales se incluyen en el diseño de un sitio web personalizado?",
-        content: "Lorem 2 ipsum dolor sit amet consectetur adipisicing elit. Dolores praesentium ratione itaque earum aperiam aliquam, error culpa fugiat ea corporis impedit. Ea illo et facilis nulla esse distinctio iste nesciunt."
-      },
-      {
-        title: "¿Cuáles son los principios más importantes del diseño de sitios web?",
-        content: "Lorem 3 ipsum dolor sit amet consectetur adipisicing elit. Dolores praesentium ratione itaque earum aperiam aliquam, error culpa fugiat ea corporis impedit. Ea illo et facilis nulla esse distinctio iste nesciunt."
-      },
-      {
-        title: "¿Qué pasos incluye el proceso de diseño web profesional?",
-        content: "Lorem 3 ipsum dolor sit amet consectetur adipisicing elit. Dolores praesentium ratione itaque earum aperiam aliquam, error culpa fugiat ea corporis impedit. Ea illo et facilis nulla esse distinctio iste nesciunt."
+  async loadData () {
+    try {
+      const response = await fetch('/api/customer/faqs')
+
+      if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.statusText}`)
       }
-    ]
+
+      this.data = await response.json()
+    } catch (error) {
+      console.error('Error fetching FAQs:', error)
+      this.data = null
+    }
   }
 
-  render() {
+  render () {
     this.shadow.innerHTML =
-    /*html*/`
+    /* html */`
     <style>
 
       *{
@@ -118,8 +114,6 @@ class Faqs extends HTMLElement {
     
     `
 
-
-
     this.data.forEach(faq => {
       const faqsContainer = this.shadow.querySelector('.faqs-content')
       const faqContainer = document.createElement('div')
@@ -144,17 +138,17 @@ class Faqs extends HTMLElement {
       const faqButton = document.createElement('div')
       faqButton.classList.add('faq-button')
       summary.appendChild(faqButton)
-      
+
       faqButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                   <title>plus</title>
                   <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
                 </svg>`
 
       const faqContent = document.createElement('p')
-      faqContent.textContent = faq.content
+      faqContent.textContent = faq.description
       details.appendChild(faqContent)
     })
   }
 }
 
-customElements.define('faqs-component', Faqs);
+customElements.define('faqs-component', Faqs)

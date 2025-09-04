@@ -39,9 +39,9 @@ exports.findAll = async (req, res, next) => {
 
     const response = {
       rows: result.map(doc => ({
-        ...doc,
         id: doc._id,
         _id: undefined,
+        title: doc.title,
         createdAt: moment(doc.createdAt).format('YYYY-MM-DD HH:mm'),
         updatedAt: moment(doc.updatedAt).format('YYYY-MM-DD HH:mm')
       })),

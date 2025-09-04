@@ -1,5 +1,4 @@
 class FeaturesTitles extends HTMLElement {
-
   constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
@@ -10,23 +9,24 @@ class FeaturesTitles extends HTMLElement {
     await this.render()
   }
 
-  loadData() {
-    this.data = [
-      {
-        title: "Filtra",
-      },
-      {
-        title: "Automatiza",
-      },
-      {
-        title: "Ahorra",
+  async loadData () {
+    try {
+      const response = await fetch('/api/customer/feature-titles')
+
+      if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.statusText}`)
       }
-    ]
+
+      this.data = await response.json()
+    } catch (error) {
+      console.error('Error fetching feature-titles:', error)
+      this.data = null
+    }
   }
-  
+
   render () {
     this.shadow.innerHTML =
-    /*html*/`
+    /* html */`
     <style>
 
       *{
@@ -123,4 +123,4 @@ class FeaturesTitles extends HTMLElement {
   }
 }
 
-customElements.define('features-titles-component', FeaturesTitles);
+customElements.define('features-titles-component', FeaturesTitles)

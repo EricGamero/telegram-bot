@@ -18,5 +18,10 @@ router.use('/admin/languages', require('./admin/languages'))
 router.use('/admin/towns', require('./admin/towns'))
 router.use('/admin/events', require('./admin/events'))
 router.use('/admin/event-prices', require('./admin/event-prices'))
+router.use('/customer/faqs', require('./customer/faqs'))
+router.use('/admin/feature-titles', require('./admin/feature-titles'))
+router.use('/customer/feature-titles', require('./customer/feature-titles'))
+router.use('/admin/cards', require('./admin/cards'))
+router.use('/customer/cards', require('./customer/cards'))
 
 module.exports = router
