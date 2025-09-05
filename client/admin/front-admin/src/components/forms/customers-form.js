@@ -2,11 +2,11 @@ import isEqual from 'lodash-es/isEqual'
 import { store } from '../../redux/store.js'
 import { refreshTable, showFormElement } from '../../redux/crud-slice.js'
 
-class CardForm extends HTMLElement {
+class CustomerForm extends HTMLElement {
   constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
-    this.endpoint = '/api/admin/cards'
+    this.endpoint = '/api/admin/customers'
     this.unsubscribe = null
     this.formElementData = null
   }
@@ -178,11 +178,6 @@ class CardForm extends HTMLElement {
           pointer-events: none
         }        
 
-        textarea{
-          height: 10lh;
-          width: 100%;
-        }
-
       </style>
 
       <section class="form">
@@ -217,31 +212,16 @@ class CardForm extends HTMLElement {
           <form>
             <input type="hidden" name="id">
             <div class="tab-content active" data-tab="general">
+
               <div class="form-element">
                 <div class="form-element-label">
-                  <label for="title">Título</label>
+                  <label for="email">Email</label>
                 </div>
                 <div class="form-element-input">
-                  <input type="text" name="title">
+                  <input type="text" name="email">
                 </div>  
               </div>
-              <div class="form-element">
-                <div class="form-element-label">
-                  <label for="description">Descripción</label>
-                </div>
-                <div class="form-element-input">
-                  <textarea name="description"></textarea>
-                </div>  
-              </div>
-              <div class="form-element">
-                <div class="form-element-label">
-                  <label for="name">Nombre</label>
-                </div>
-                <div class="form-element-input">
-                  <input type="text" name="name">
-                </div>  
-              </div>
-            </div>  
+    
           </form>  
         </div>
       </section>
@@ -422,4 +402,4 @@ class CardForm extends HTMLElement {
   }
 }
 
-customElements.define('cards-form-component', CardForm)
+customElements.define('customers-form-component', CustomerForm)

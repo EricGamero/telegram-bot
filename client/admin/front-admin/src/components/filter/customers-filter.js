@@ -1,19 +1,19 @@
 import { store } from '../../redux/store.js'
 import { setFilterQuery } from '../../redux/crud-slice.js'
 
-class CardFilter extends HTMLElement {
+class CustomerFilter extends HTMLElement {
   constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
-    this.endpoint = '/api/admin/cards'
-    document.addEventListener('showCardFilter', this.showCardFilter.bind(this))
+    this.endpoint = '/api/admin/customers'
+    document.addEventListener('showCustomerFilter', this.showCustomerFilter.bind(this))
   }
 
   async connectedCallback () {
     this.render()
   }
 
-  showCardFilter (event) {
+  showCustomerFilter (event) {
     if (event.detail.endpoint === this.endpoint) {
       this.shadow.querySelector('.overlay').classList.add('active')
     }
@@ -116,10 +116,10 @@ class CardFilter extends HTMLElement {
             <form>
               <div class="form-element">
                 <div class="form-element-label">
-                  <label for="email">Email</label>
+                  <label for="name">Nombre</label>
                 </div>
                 <div class="form-element-input">
-                  <input type="text" name="email">
+                  <input type="text" name="name">
                 </div>  
               </div>
             </form>
@@ -195,4 +195,4 @@ class CardFilter extends HTMLElement {
   }
 }
 
-customElements.define('cards-filter-component', CardFilter)
+customElements.define('customers-filter-component', CustomerFilter)

@@ -1,15 +1,16 @@
 module.exports = (mongoose) => {
   const schema = mongoose.Schema(
     {
+      name: String,
       title: String,
       description: String,
-      name: String,
+      buttonText: String,
+      buttonLink: String,
       deletedAt: Date
-
     },
     { timestamps: true }
   )
 
-  const Card = mongoose.model('Card', schema, 'cards')
-  return Card
+  const Hero = mongoose.model('Hero', schema, 'heroes')
+  return Hero
 }

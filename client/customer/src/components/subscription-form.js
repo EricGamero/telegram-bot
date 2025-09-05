@@ -10,14 +10,18 @@ class SubscriptionForm extends HTMLElement {
     await this.render()
   }
 
-  loadData () {
-    this.data = {
-      explanationTitle: 'Promote a new product or service',
-      explanationInfo: 'star your business today with a great and strong landing page mado to enchance the marketers workflow.',
-      explanationFeatured: 'subscripción por un año',
-      infoAreaTitle: 'Empieza a usarlo',
-      infoAreaSubtitle: 'Te enviaremos un correo electrónico con las instrucciones para que puedas comenzar a utilizar nuestro bot.',
-      buttonText: 'Suscribirme'
+  async loadData () {
+    try {
+      const response = await fetch(`/api/customer/subscription-forms/${this.getAttribute('name')}`)
+
+      if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.statusText}`)
+      }
+
+      this.data = await response.json()
+    } catch (error) {
+      console.error('Error loading data:', error)
+      this.data = []
     }
   }
 
@@ -229,6 +233,42 @@ class SubscriptionForm extends HTMLElement {
       .form-element-button button:hover{
          background-color: hsl(200, 77%, 42%);
       }
+      .validation-errors{
+        display: none;
+        color: #000000;
+        padding: 0.5rem 0.7rem;
+        margin-bottom: 1rem;
+        border: 2px solid #7a2727ff;
+        border-radius: 0.5rem;
+        position: relative;
+      }
+
+      .validation-errors.active{
+        display: block;
+      }
+
+      .validation-errors ul{
+        list-style: none;
+        padding: 0;
+      }
+
+      .validation-errors p{
+        font-weight: 700;
+        font-size: 1.2rem;
+      }
+
+      .validation-errors .close-validation-errors{
+        cursor: pointer;
+        position: absolute;
+        right: 0.5rem;
+        top: 0.5rem;
+      }
+
+      .close-validation-errors svg{
+        fill: hsla(0, 52%, 32%, 1.00);
+        height: 2rem;
+        width: 2rem;
+      }
     </style>
 
 
@@ -237,30 +277,39 @@ class SubscriptionForm extends HTMLElement {
     <section class="subscription-form">
     <div class="explanation">
       <div class="explanation-title">
-        <h3>${this.data.explanationTitle}</h3>
+        <h3>${this.data.title}</h3>
       </div>
       <div class="explanation-info">
-        <p>${this.data.explanationInfo}</p>
+        <p>${this.data.info}</p>
       </div>
       <div class="explanation-featured">
-        <span>${this.data.explanationFeatured}</span>
+        <span>${this.data.featured}</span>
       </div>
     </div>
     <div class="form-container">
       <div class="info-area">
         <div class="info-area-text">
           <div class="info-area-title">
-            <h4>${this.data.infoAreaTitle}</h4>
+            <h4>${this.data.start}</h4>
           </div>
           <div class="info-area-subtitle">
-            <span>${this.data.infoAreaSubtitle}</span>
+            <span>${this.data.instructions}</span>
           </div>
         </div>
         <div class="info-area-icon">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>hand-pointing-down</title><path d="M9.9,21V11L6.7,12.69L6.5,12.72C6.19,12.72 5.93,12.6 5.74,12.4L5,11.63L9.9,7.43C10.16,7.16 10.5,7 10.9,7H17.4C18.17,7 18.9,7.7 18.9,8.5V12.86C18.9,13.47 18.55,14 18.05,14.2L13.11,16.4L11.9,16.53V21A1,1 0 0,1 10.9,22A1,1 0 0,1 9.9,21M18.9,5H10.9V2H18.9V5Z" /></svg>
         </div>
       </div>
+
       <div class="form">
+        <div class="validation-errors">
+          <p>Error en la validación, revisa los siguientes errores: </p>
+          <ul></ul>
+          <div class="button close-validation-errors">
+            <span class="tooltip">Cerrar</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2C6.47,2 2,6.47 2,12C2,17.53 6.47,22 12,22C17.53,22 22,17.53 22,12C22,6.47 17.53,2 12,2M14.59,8L12,10.59L9.41,8L8,9.41L10.59,12L8,14.59L9.41,16L12,13.41L14.59,16L16,14.59L13.41,12L16,9.41L14.59,8Z" /></svg>
+          </div>
+        </div>
         <form>
           <div class="form-element">
             <div class="form-element-input">
@@ -275,6 +324,71 @@ class SubscriptionForm extends HTMLElement {
     </div>
   </section>
   `
+    this.addEventListeners()
+  }
+
+  addEventListeners () {
+    const form = this.shadow.querySelector('form')
+    const input = this.shadow.querySelector('input')
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault()
+
+      const email = input.value.trim()
+
+      try {
+        const response = await fetch('/api/admin/customers', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email })
+        })
+
+        if (!response.ok) {
+          // si es error 422 (validación), lo mostramos
+          if (response.status === 422) {
+            const data = await response.json()
+            this.showValidationErrors(data.message)
+            return
+          }
+          throw new Error('Error en la suscripción')
+        }
+
+        const result = await response.json()
+        console.log('Suscripción correcta:', result)
+        form.reset()
+        this.closeValidationErrors()
+      } catch (error) {
+        console.log('Error al enviar la suscripción:', error)
+      }
+    })
+
+    // botón cerrar errores
+    this.shadow.addEventListener('click', (event) => {
+      if (event.target.closest('.close-validation-errors')) {
+        this.closeValidationErrors()
+      }
+    })
+  }
+
+  // === AÑADIDO ===
+  showValidationErrors (errors) {
+    const errorsContainer = this.shadow.querySelector('.validation-errors')
+    const errorsList = this.shadow.querySelector('.validation-errors ul')
+    errorsList.innerHTML = ''
+
+    errors.forEach(error => {
+      const li = document.createElement('li')
+      li.textContent = error.message
+      errorsList.appendChild(li)
+    })
+
+    errorsContainer.classList.add('active')
+  }
+
+  closeValidationErrors () {
+    this.shadow.querySelector('.validation-errors').classList.remove('active')
   }
 }
 

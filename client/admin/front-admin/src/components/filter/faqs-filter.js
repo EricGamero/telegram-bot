@@ -116,7 +116,7 @@ class FaqFilter extends HTMLElement {
             <form>
               <div class="form-element">
                 <div class="form-element-label">
-                  <label>Título</label>
+                  <label for="title">Título</label>
                 </div>
                 <div class="form-element-input">
                   <input type="text" name="title">
@@ -124,7 +124,7 @@ class FaqFilter extends HTMLElement {
               </div>
               <div class="form-element">
                 <div class="form-element-label">
-                  <label for="name">Activo</label>
+                  <label for="isActive">Activo</label>
                 </div>
                 <div class="form-element-input">
                   <input type="checkbox" name="isActive">

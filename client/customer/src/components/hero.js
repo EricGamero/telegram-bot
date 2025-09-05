@@ -1,5 +1,4 @@
 class Hero extends HTMLElement {
-
   constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
@@ -11,17 +10,24 @@ class Hero extends HTMLElement {
     await this.render()
   }
 
-  loadData () {
-    this.data = {
-      title: "Un bot de Telegram para buscar tus productos favoritos",
-      description: "Ahorra dinero perfeccionando y automatizando tus búsquedas gracias a nuestra IA.",
-      buttonText: "Comenzar"
+  async loadData () {
+    try {
+      const response = await fetch(`/api/customer/heroes/${this.getAttribute('name')}`)
+
+      if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.statusText}`)
+      }
+
+      this.data = await response.json()
+    } catch (error) {
+      console.error('Error loading data:', error)
+      this.data = []
     }
   }
-  
+
   render () {
     this.shadow.innerHTML =
-    /*html*/`
+    /* html */`
     <style>
 
       *{
@@ -348,7 +354,9 @@ class Hero extends HTMLElement {
           </p>
         </div>
         <div class="hero-button">
-          <button>${this.data.buttonText}</button>
+          <a href="${this.data.buttonLink}">
+            <button>${this.data.buttonText}</button>
+          </a>
         </div>
       </div>
 
@@ -414,4 +422,4 @@ class Hero extends HTMLElement {
   }
 }
 
-customElements.define('hero-component', Hero);
+customElements.define('hero-component', Hero)

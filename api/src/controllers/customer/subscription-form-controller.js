@@ -1,5 +1,5 @@
 const mongooseDb = require('../../models/mongoose')
-const Card = mongooseDb.Card
+const SubscriptionForm = mongooseDb.SubscriptionForm
 
 exports.findOne = async (req, res, next) => {
   try {
@@ -7,7 +7,7 @@ exports.findOne = async (req, res, next) => {
     whereStatement.deletedAt = { $exists: false }
     whereStatement.name = req.params.name
 
-    const response = await Card.findOne(whereStatement)
+    const response = await SubscriptionForm.findOne(whereStatement)
       .lean()
       .exec()
 

@@ -12,40 +12,16 @@ class Cards extends HTMLElement {
 
   async loadData () {
     try {
-      const response = await fetch('/api/customer/cards', {
-        headers: { Accept: 'application/json' }
-      })
+      const response = await fetch(`/api/customer/cards/${this.getAttribute('name')}`)
+
       if (!response.ok) {
-        throw new Error(`Error fetching data: ${response.status} ${response.statusText}`)
+        throw new Error(`Error fetching data: ${response.statusText}`)
       }
 
-      const raw = await response.json()
-
-      // Normaliza a un único objeto:
-      // - si viene como { title, description, ... } -> usa raw
-      // - si viene como { data: {...} }            -> usa raw.data
-      // - si viene como array [ {...} ]            -> usa el primero
-      // - si viene como { items: [ {...} ] }       -> usa el primero de items
-      const src =
-      (raw && raw.data)
-        ? raw.data
-        : (raw && Array.isArray(raw.items) && raw.items[0])
-            ? raw.items[0]
-            : (Array.isArray(raw) && raw[0])
-                ? raw[0]
-                : raw
-
-      // Asigna solo lo que te interesa (con fallback a vacío)
-      this.data = {
-        title: String(src?.title ?? ''),
-        description: String(src?.description ?? ''),
-      }
-
-      // Útil para depurar una vez: ver qué llegó
-      // console.log('payload /api/customer/cards:', raw, '→ usando:', this.data);
+      this.data = await response.json()
     } catch (error) {
-      console.error('Error fetching cards:', error)
-      this.data = { title: '', description: '' } // nunca null
+      console.error('Error loading data:', error)
+      this.data = []
     }
   }
 

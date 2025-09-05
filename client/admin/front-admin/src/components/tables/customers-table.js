@@ -1,11 +1,11 @@
 import { store } from '../../redux/store.js'
 import { showFormElement } from '../../redux/crud-slice.js'
 
-class CardTable extends HTMLElement {
+class CustomerTable extends HTMLElement {
   constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
-    this.endpoint = '/api/admin/cards'
+    this.endpoint = '/api/admin/customers'
     this.filterQuery = null
     this.unsubscribe = null
   }
@@ -285,7 +285,7 @@ class CardTable extends HTMLElement {
       contentContainer.appendChild(contentUl)
 
       const translations = {
-        name: 'Nombre',
+        email: 'Correo electrónico',
         isActive: 'Activo',
         createdAt: 'Fecha de creación',
         updatedAt: 'Fecha de actualización'
@@ -310,7 +310,7 @@ class CardTable extends HTMLElement {
   renderButtons () {
     this.shadow.querySelector('.table').addEventListener('click', async event => {
       if (event.target.closest('.filter-button')) {
-        document.dispatchEvent(new CustomEvent('showCardFilter', {
+        document.dispatchEvent(new CustomEvent('showCustomerFilter', {
           detail: {
             endpoint: this.endpoint
           }
@@ -373,4 +373,4 @@ class CardTable extends HTMLElement {
   }
 }
 
-customElements.define('cards-table-component', CardTable)
+customElements.define('customers-table-component', CustomerTable)

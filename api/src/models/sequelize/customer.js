@@ -7,18 +7,10 @@ module.exports = function (sequelize, DataTypes) {
         primaryKey: true,
         allowNull: false
       },
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
       email: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true
-      },
-      birthdate: {
-        type: DataTypes.DATE,
-        allowNull: false
       },
       createdAt: {
         type: DataTypes.DATE,

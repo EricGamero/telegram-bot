@@ -2,11 +2,11 @@ import isEqual from 'lodash-es/isEqual'
 import { store } from '../../redux/store.js'
 import { refreshTable, showFormElement } from '../../redux/crud-slice.js'
 
-class CardForm extends HTMLElement {
+class HeroForm extends HTMLElement {
   constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
-    this.endpoint = '/api/admin/cards'
+    this.endpoint = '/api/admin/heroes'
     this.unsubscribe = null
     this.formElementData = null
   }
@@ -58,9 +58,11 @@ class CardForm extends HTMLElement {
         input{
           width: 100%;
           height:2.2rem;
+          
           border: 1px solid #d1d5db;
           border-radius: 8px;
           background: rgba(255, 255, 255, 0.9);
+
         }
 
         svg{
@@ -176,8 +178,8 @@ class CardForm extends HTMLElement {
           width: 1.2rem;
           height: 1.2rem;
           pointer-events: none
-        }        
-
+        }    
+        
         textarea{
           height: 10lh;
           width: 100%;
@@ -219,7 +221,15 @@ class CardForm extends HTMLElement {
             <div class="tab-content active" data-tab="general">
               <div class="form-element">
                 <div class="form-element-label">
-                  <label for="title">Título</label>
+                  <label for="name">Nombre</label>
+                </div>
+                <div class="form-element-input">
+                  <input type="text" name="name">
+                </div>  
+              </div>
+              <div class="form-element">
+                <div class="form-element-label">
+                  <label for="name">Título</label>
                 </div>
                 <div class="form-element-input">
                   <input type="text" name="title">
@@ -227,7 +237,7 @@ class CardForm extends HTMLElement {
               </div>
               <div class="form-element">
                 <div class="form-element-label">
-                  <label for="description">Descripción</label>
+                  <label for="name">Descripción</label>
                 </div>
                 <div class="form-element-input">
                   <textarea name="description"></textarea>
@@ -235,13 +245,21 @@ class CardForm extends HTMLElement {
               </div>
               <div class="form-element">
                 <div class="form-element-label">
-                  <label for="name">Nombre</label>
+                  <label for="name">Texto botón</label>
                 </div>
                 <div class="form-element-input">
-                  <input type="text" name="name">
+                  <input type="text" name="buttonText">
                 </div>  
               </div>
-            </div>  
+               <div class="form-element">
+                <div class="form-element-label">
+                  <label for="name">Texto botón</label>
+                </div>
+                <div class="form-element-input">
+                  <input type="text" name="buttonLink">
+                </div>  
+              </div>
+            </div>
           </form>  
         </div>
       </section>
@@ -422,4 +440,4 @@ class CardForm extends HTMLElement {
   }
 }
 
-customElements.define('cards-form-component', CardForm)
+customElements.define('heroes-form-component', HeroForm)

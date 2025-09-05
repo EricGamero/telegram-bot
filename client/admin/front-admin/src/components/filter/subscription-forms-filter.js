@@ -1,19 +1,19 @@
 import { store } from '../../redux/store.js'
 import { setFilterQuery } from '../../redux/crud-slice.js'
 
-class CardFilter extends HTMLElement {
+class SubscriptionFormFilter extends HTMLElement {
   constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
-    this.endpoint = '/api/admin/cards'
-    document.addEventListener('showCardFilter', this.showCardFilter.bind(this))
+    this.endpoint = '/api/admin/subscription-forms'
+    document.addEventListener('showSubscriptionFormFilter', this.showSubscriptionFormFilter.bind(this))
   }
 
   async connectedCallback () {
     this.render()
   }
 
-  showCardFilter (event) {
+  showSubscriptionFormFilter (event) {
     if (event.detail.endpoint === this.endpoint) {
       this.shadow.querySelector('.overlay').classList.add('active')
     }
@@ -116,13 +116,12 @@ class CardFilter extends HTMLElement {
             <form>
               <div class="form-element">
                 <div class="form-element-label">
-                  <label for="email">Email</label>
+                  <label for="Name">Nombre</label>
                 </div>
                 <div class="form-element-input">
-                  <input type="text" name="email">
+                  <input type="text" name="name">
                 </div>  
               </div>
-            </form>
 
             <div class="modal-buttons">
             <div class="confirm-modal-button">
@@ -195,4 +194,4 @@ class CardFilter extends HTMLElement {
   }
 }
 
-customElements.define('cards-filter-component', CardFilter)
+customElements.define('subscription-forms-filter-component', SubscriptionFormFilter)

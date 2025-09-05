@@ -41,7 +41,7 @@ exports.findAll = async (req, res, next) => {
       rows: result.map(doc => ({
         id: doc._id,
         _id: undefined,
-        title: doc.title,
+        name: doc.name,
         createdAt: moment(doc.createdAt).format('YYYY-MM-DD HH:mm'),
         updatedAt: moment(doc.updatedAt).format('YYYY-MM-DD HH:mm')
       })),

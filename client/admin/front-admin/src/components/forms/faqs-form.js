@@ -230,7 +230,7 @@ class FaqForm extends HTMLElement {
               </div>
             <div class="form-element">
               <div class="form-element-label">
-                <label for="name">Activo</label>
+                <label for="isActive">Activo</label>
               </div>
               <div class="form-element-input">
                 <input type="checkbox" name="isActive">
