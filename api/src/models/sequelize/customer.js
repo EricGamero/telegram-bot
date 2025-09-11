@@ -10,8 +10,17 @@ module.exports = function (sequelize, DataTypes) {
       email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
-      },
+        unique: {
+          msg: 'Correo ya está registrado en la base de datos',
+        },
+        validate: {
+          isEmail: {
+            msg: 'Agrega un correo válido'
+          },
+          notEmpty: {
+            msg: 'Por favor ingrese un correo electronico'
+          }
+        },
       createdAt: {
         type: DataTypes.DATE,
         get () {
