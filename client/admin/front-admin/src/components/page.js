@@ -30,7 +30,8 @@ class PageComponent extends HTMLElement {
       '/admin/cartas': 'cards.html',
       '/admin/heroes': 'heroes.html',
       '/admin/formularios-de-subscripcion': 'subscription-forms.html',
-      '/admin/clientes': 'customers.html'
+      '/admin/clientes': 'customers.html',
+      '/admin/idiomas': 'languages.html',
 
     }
 

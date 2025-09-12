@@ -20,7 +20,8 @@ module.exports = function (sequelize, DataTypes) {
           notEmpty: {
             msg: 'Por favor ingrese un correo electronico'
           }
-        },
+        }
+      },
       createdAt: {
         type: DataTypes.DATE,
         get () {

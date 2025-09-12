@@ -5,10 +5,6 @@ module.exports = (mongoose) => {
       alias: String,
       selected: Boolean,
       default: Boolean,
-      isActive: {
-        type: Boolean,
-        default: true
-      },
       deletedAt: Date
     },
     { timestamps: true }

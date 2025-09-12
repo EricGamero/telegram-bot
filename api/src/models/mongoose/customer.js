@@ -1,7 +1,10 @@
 module.exports = (mongoose) => {
   const schema = mongoose.Schema(
     {
-      email: String,
+      email: {
+        type: String,
+        unique: true,
+      },
       deletedAt: Date
     },
     { timestamps: true }

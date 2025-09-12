@@ -2,11 +2,11 @@ import isEqual from 'lodash-es/isEqual'
 import { store } from '../../redux/store.js'
 import { refreshTable, showFormElement } from '../../redux/crud-slice.js'
 
-class SubscriptionForm extends HTMLElement {
+class LanguageForm extends HTMLElement {
   constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
-    this.endpoint = '/api/admin/subscription-forms'
+    this.endpoint = '/api/admin/languages'
     this.unsubscribe = null
     this.formElementData = null
   }
@@ -55,11 +55,6 @@ class SubscriptionForm extends HTMLElement {
           box-sizing: border-box;
         }
 
-        .form-element-input.error input{
-          border-color: #7a2727;
-           background-color: #fee2e2;
-        } 
-
         input{
           width: 100%;
           height:2.2rem;
@@ -69,6 +64,7 @@ class SubscriptionForm extends HTMLElement {
           background: rgba(255, 255, 255, 0.9);
 
         }
+        
 
         svg{
           width: 2rem;
@@ -183,12 +179,7 @@ class SubscriptionForm extends HTMLElement {
           width: 1.2rem;
           height: 1.2rem;
           pointer-events: none
-        }    
-        
-        textarea{
-          height: 10lh;
-          width: 100%;
-        }
+        }        
 
       </style>
 
@@ -226,61 +217,37 @@ class SubscriptionForm extends HTMLElement {
             <div class="tab-content active" data-tab="general">
               <div class="form-element">
                 <div class="form-element-label">
-                  <label for="name">Nombre</label>
+                  <label for="name">Idioma</label>
                 </div>
                 <div class="form-element-input">
                   <input type="text" name="name">
                 </div>  
-              </div>            
+              </div>
               <div class="form-element">
                 <div class="form-element-label">
-                  <label for="title">Título</label>
+                  <label for="alias">Alias</label>
                 </div>
                 <div class="form-element-input">
-                  <input type="text" name="title">
+                  <input type="text" name="alias">
                 </div>  
               </div>
               <div class="form-element">
                 <div class="form-element-label">
-                  <label for="info">Información</label>
+                  <label for="selected">Seleccionado</label>
                 </div>
                 <div class="form-element-input">
-                  <textarea name="info"></textarea>
+                  <input type="checkbox" name="selected">
                 </div>  
               </div>
               <div class="form-element">
                 <div class="form-element-label">
-                  <label for="featured">Subscripción destacada</label>
+                  <label for="default">Idioma por defecto</label>
                 </div>
                 <div class="form-element-input">
-                  <input type="text" name="featured">
+                  <input type="checkbox" name="default">
                 </div>  
               </div>
-              <div class="form-element">
-                <div class="form-element-label">
-                  <label for="start">Título area formulario</label>
-                </div>
-                <div class="form-element-input">
-                  <input type="text" name="start">
-                </div>  
-              </div>
-              <div class="form-element">
-                <div class="form-element-label">
-                  <label for="instructions">Instrucciones</label>
-                </div>
-                <div class="form-element-input">
-                  <textarea name="instructions"></textarea>
-                </div>  
-              </div>        
-              <div class="form-element">
-                <div class="form-element-label">
-                  <label for="buttonText">Texto botón</label>
-                </div>
-                <div class="form-element-input">
-                  <input type="text" name="buttonText">
-                </div>  
-              </div>
-            </div>
+            </div>  
           </form>  
         </div>
       </section>
@@ -461,4 +428,4 @@ class SubscriptionForm extends HTMLElement {
   }
 }
 
-customElements.define('subscription-forms-form-component', SubscriptionForm)
+customElements.define('languages-form-component', LanguageForm)

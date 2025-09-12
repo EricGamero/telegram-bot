@@ -5,6 +5,7 @@ const Faq = mongooseDb.Faq
 exports.findAll = async (req, res, next) => {
   try {
     const whereStatement = {}
+    whereStatement.isActive = 'true'
     whereStatement.deletedAt = { $exists: false }
 
     const result = await Faq.find(whereStatement)

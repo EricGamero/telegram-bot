@@ -63,6 +63,8 @@ class FaqForm extends HTMLElement {
           background: rgba(255, 255, 255, 0.9);
         }
 
+
+
         svg{
           width: 2rem;
           cursor:pointer;
@@ -233,7 +235,10 @@ class FaqForm extends HTMLElement {
                 <label for="isActive">Activo</label>
               </div>
               <div class="form-element-input">
-                <input type="checkbox" name="isActive">
+                <select name="isActive" id="isActive">
+                  <option value=true>Activo</option>
+                  <option value=false>Desactivado</option>
+                </select>
               </div>  
             </div>
           </form>  

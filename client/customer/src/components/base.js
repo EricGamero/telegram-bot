@@ -1,22 +1,22 @@
 class SubscriptionForm extends HTMLElement {
-  constructor() {
-    super();
-    this.shadow = this.attachShadow({ mode: 'open' });
-    this.data = [];
+  constructor () {
+    super()
+    this.shadow = this.attachShadow({ mode: 'open' })
+    this.data = []
   }
 
-  async connectedCallback() {
-    await this.loadData();
-    await this.render();
+  async connectedCallback () {
+    await this.loadData()
+    await this.render()
   }
 
-  loadData() {
-    this.data = {};
+  loadData () {
+    this.data = {}
   }
 
-  async render() {
-    this.shadow.innerHTML = 
-    /*html*/
+  async render () {
+    this.shadow.innerHTML =
+    /* html */
 
       `
       <style>
@@ -24,11 +24,7 @@ class SubscriptionForm extends HTMLElement {
       </style>
      
       `
-      
-      
-      
-      ;
   }
 }
 
-customElements.define("subscription-form-component", SubscriptionForm);
+customElements.define('subscription-form-component', SubscriptionForm)

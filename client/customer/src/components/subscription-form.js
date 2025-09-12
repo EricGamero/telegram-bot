@@ -233,29 +233,41 @@ class SubscriptionForm extends HTMLElement {
       .form-element-button button:hover{
          background-color: hsl(200, 77%, 42%);
       }
-      .validation-errors{
-        display: none;
-        color: #000000;
-        padding: 0.5rem 0.7rem;
-        margin-bottom: 1rem;
-        border: 2px solid #7a2727ff;
-        border-radius: 0.5rem;
-        position: relative;
-      }
-
-      .validation-errors.active{
-        display: block;
-      }
-
       .validation-errors ul{
-        list-style: none;
-        padding: 0;
-      }
+          list-style: disc inside;
+          color: #EF8A8A;
+          margin: 0.5rem 0 0;
+          padding: 0;
+          font-size: 0.875rem;
+          list-style:none;
+          position: relative;
+          font-size:1.2rem;
+        }
+        .validation-errors.error {
+          border: 2px solid red;
+          padding: .5rem;
+          
+        }
 
-      .validation-errors p{
-        font-weight: 700;
-        font-size: 1.2rem;
-      }
+        .close-button {
+          display: flex;              /* quita hueco de la línea base */
+          align-items: center;
+          justify-content: center;
+          position: absolute;
+          width: 2rem;
+          height: 2rem;
+          right:1.6rem;
+          top:10rem;
+          border: none;
+          cursor: pointer;
+          padding: 0;
+        }
+
+        .close-button svg {
+          width: 1.2rem;
+          height: 1.2rem;
+          pointer-events: none
+        }
 
       .validation-errors .close-validation-errors{
         cursor: pointer;
@@ -303,17 +315,12 @@ class SubscriptionForm extends HTMLElement {
 
       <div class="form">
         <div class="validation-errors">
-          <p>Error en la validación, revisa los siguientes errores: </p>
           <ul></ul>
-          <div class="button close-validation-errors">
-            <span class="tooltip">Cerrar</span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2C6.47,2 2,6.47 2,12C2,17.53 6.47,22 12,22C17.53,22 22,17.53 22,12C22,6.47 17.53,2 12,2M14.59,8L12,10.59L9.41,8L8,9.41L10.59,12L8,14.59L9.41,16L12,13.41L14.59,16L16,14.59L13.41,12L16,9.41L14.59,8Z" /></svg>
-          </div>
         </div>
         <form>
           <div class="form-element">
             <div class="form-element-input">
-              <input type="text" placeholder="Dirección de correo">
+              <input type="text" name="email" placeholder="Dirección de correo">
             </div>
           </div>
           <div class="form-element-button">
@@ -330,6 +337,14 @@ class SubscriptionForm extends HTMLElement {
   addEventListeners () {
     const form = this.shadow.querySelector('form')
     const input = this.shadow.querySelector('input')
+    // al escribir, quitamos borde rojo y si no quedan errores visibles, ocultamos panel
+    input.addEventListener('input', () => {
+      const container = input.closest('.form-element-input')
+      container.classList.remove('error')
+
+      const ul = this.shadow.querySelector('.validation-errors ul')
+      if (ul && ul.children.length <= 1) this.closeValidationErrors()
+    })
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault()
@@ -337,7 +352,7 @@ class SubscriptionForm extends HTMLElement {
       const email = input.value.trim()
 
       try {
-        const response = await fetch('/api/admin/customers', {
+        const response = await fetch('/api/customer/customers', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -374,21 +389,47 @@ class SubscriptionForm extends HTMLElement {
 
   // === AÑADIDO ===
   showValidationErrors (errors) {
-    const errorsContainer = this.shadow.querySelector('.validation-errors')
-    const errorsList = this.shadow.querySelector('.validation-errors ul')
-    errorsList.innerHTML = ''
+  // Normaliza el formato: acepta string o array
+    const messages = Array.isArray(errors)
+      ? errors
+      : [{ message: String(errors || 'Ha ocurrido un error'), path: 'email' }]
 
-    errors.forEach(error => {
+    const errorsContainer = this.shadow.querySelector('.validation-errors')
+    const errorsList = errorsContainer.querySelector('ul')
+
+    // 1) limpia estado anterior
+    errorsList.innerHTML = ''
+    this.shadow.querySelectorAll('.form-element-input.error')
+      .forEach(el => el.classList.remove('error'))
+
+    // 2) vuelca mensajes
+    messages.forEach(err => {
       const li = document.createElement('li')
-      li.textContent = error.message
+      li.textContent = err.message || 'Error'
       errorsList.appendChild(li)
+
+      // si indica el campo, marca el contenedor
+      if (err.path) {
+        const input = this.shadow.querySelector(`[name="${err.path}"]`)
+        if (input) input.closest('.form-element-input').classList.add('error')
+      }
     })
 
+    // 3) muestra el panel
+    errorsContainer.setAttribute('role', 'alert')
+    errorsContainer.setAttribute('aria-live', 'polite')
     errorsContainer.classList.add('active')
   }
 
   closeValidationErrors () {
-    this.shadow.querySelector('.validation-errors').classList.remove('active')
+    const errorsContainer = this.shadow.querySelector('.validation-errors')
+    const errorsList = errorsContainer.querySelector('ul')
+
+    errorsList.innerHTML = ''
+    errorsContainer.classList.remove('active')
+
+    this.shadow.querySelectorAll('.form-element-input.error')
+      .forEach(el => el.classList.remove('error'))
   }
 }
 
