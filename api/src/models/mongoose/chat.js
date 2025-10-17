@@ -1,7 +1,6 @@
 module.exports = (mongoose) => {
   const schema = mongoose.Schema(
     {
-      customerStaffId: String,
       assistantName: String,
       assistantEndpoint: String,
       threadId: String,

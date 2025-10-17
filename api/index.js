@@ -1,10 +1,15 @@
-// variable global con la ruta de index, el archivo donde se encuentra la variable
 global.__basedir = __dirname
-// se ejecuta primero el codigo dentro de app.js antes de seguir con el const PORT, en concreto
-// variable app que transforma el server en api
-const app = require('./src/app.js')
+
+const { wss } = require('./src/services/websocket-service')
+const app = require('./src/app')
 const PORT = process.env.PORT || 8080
 
-app.listen(PORT, () => {
-  console.log(`El servidor está corriendo en el puerto ${PORT} `)
+const server = app.listen(PORT, () => {
+  console.log('El servidor está corriendo en el puerto 8080.')
+})
+
+server.on('upgrade', (req, socket, head) => {
+  wss.handleUpgrade(req, socket, head, (ws) => {
+    wss.emit('connection', ws, req)
+  })
 })
