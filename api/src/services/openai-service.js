@@ -114,4 +114,12 @@ module.exports = class OpenAIService {
   sleep (ms) {
     return new Promise((resolve) => setTimeout(resolve, ms))
   }
+
+  async getEmbedding (text) {
+    const response = await this.openai.embeddings.create({
+      model: 'text-embedding-3-small',
+      input: text
+    })
+    return response.data[0].embedding
+  }
 }
