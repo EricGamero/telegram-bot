@@ -7,6 +7,18 @@ module.exports = function (sequelize, DataTypes) {
         primaryKey: true,
         allowNull: false
       },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: {
+          msg: 'Nombre ya está registrado en la base de datos',
+        },
+        validate: {
+          notEmpty: {
+            msg: 'Por favor ingrese un nombre'
+          }
+        }
+      },
       email: {
         type: DataTypes.STRING,
         allowNull: false,

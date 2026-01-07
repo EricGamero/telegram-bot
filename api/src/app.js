@@ -5,6 +5,15 @@ const routes = require('./routes')
 const userAgentMiddleware = require('./middlewares/user-agent')
 const userTrackingMiddleware = require('./middlewares/user-tracking')
 const exposeServiceMiddleware = require('./middlewares/expose-services')
+const IORedis = require('ioredis')
+const redisClient = new IORedis(process.env.REDIS_URL)
+const subscriberClient = new IORedis(process.env.REDIS_URL)
+require('./events')(redisClient, subscriberClient)
+
+app.use((req, res, next) => {
+  req.redisClient = redisClient
+  next()
+})
 
 app.use(userAgentMiddleware)
 app.use(express.json({ limit: '10mb', extended: true }))

@@ -34,6 +34,6 @@ router.use('/customer/subscription-forms', require('./customer/subscription-form
 router.use('/customer/customers', require('./customer/customers'))
 router.use('/customer/chats', require('./customer/chats'))
 router.use('/customer/products', require('./customer/products'))
-// router.use('/customer/subscription-forms', require('./customer/subscription-forms'))
+router.use('/customer/customers', require('./customer/customers'))
 
 module.exports = router

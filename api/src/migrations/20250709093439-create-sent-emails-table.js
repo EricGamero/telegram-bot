@@ -24,11 +24,11 @@ module.exports = {
       },
       sendAt: {
         type: Sequelize.DATE,
-        allowNull: false
+        allowNull: true
       },
       readedAt: {
         type: Sequelize.DATE,
-        allowNull: false
+        allowNull: true
       },
       uuid: {
         type: Sequelize.UUID,

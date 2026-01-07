@@ -21,11 +21,11 @@ module.exports = function (sequelize, DataTypes) {
       },
       sendAt: {
         type: DataTypes.DATE,
-        allowNull: false,
+        allowNull: true,
       },
       readedAt: {
         type: DataTypes.DATE,
-        allowNull: false,
+        allowNull: true,
       },
       uuid: {
         type: DataTypes.UUID,

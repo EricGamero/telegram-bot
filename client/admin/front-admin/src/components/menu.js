@@ -1,13 +1,13 @@
 class Menu extends HTMLElement {
-  constructor() {
-    super();
-    this.shadow = this.attachShadow({ mode: 'open' });
-    this.data = [];
+  constructor () {
+    super()
+    this.shadow = this.attachShadow({ mode: 'open' })
+    this.data = []
   }
 
-  async connectedCallback() {
-    await this.loadData();
-    await this.render();
+  async connectedCallback () {
+    await this.loadData()
+    await this.render()
   }
 
   loadData () {
@@ -18,11 +18,11 @@ class Menu extends HTMLElement {
       </path> </g></svg>`
 
     }
-  } 
+  }
 
-  async render() {
-    this.shadow.innerHTML = 
-    /*html*/
+  async render () {
+    this.shadow.innerHTML =
+    /* html */
 
       `
     <style>
@@ -43,8 +43,8 @@ class Menu extends HTMLElement {
       ${this.data.svg}
     </div>
 
-      `;
+      `
   }
 }
 
-customElements.define("menu-component", Menu);
+customElements.define('menu-component', Menu)

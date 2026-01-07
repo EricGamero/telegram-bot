@@ -320,10 +320,15 @@ class SubscriptionForm extends HTMLElement {
         <form>
           <div class="form-element">
             <div class="form-element-input">
+              <input type="text" name="name" placeholder="Nombre">
+            </div>
+          </div>
+          <div class="form-element">
+            <div class="form-element-input">
               <input type="text" name="email" placeholder="Dirección de correo">
             </div>
           </div>
-          <div class="form-element-button">
+          <div class="save-button">
             <button>${this.data.buttonText}</button>
           </div>
         </form>
@@ -337,47 +342,114 @@ class SubscriptionForm extends HTMLElement {
   addEventListeners () {
     const form = this.shadow.querySelector('form')
     const input = this.shadow.querySelector('input')
-    // al escribir, quitamos borde rojo y si no quedan errores visibles, ocultamos panel
-    input.addEventListener('input', () => {
-      const container = input.closest('.form-element-input')
-      container.classList.remove('error')
 
-      const ul = this.shadow.querySelector('.validation-errors ul')
-      if (ul && ul.children.length <= 1) this.closeValidationErrors()
-    })
+    // click on the save button (delegated)
+    this.shadow.querySelector('.form').addEventListener('click', async event => {
+      if (!event.target.closest('.save-button')) return
 
-    form.addEventListener('submit', async (event) => {
       event.preventDefault()
 
-      const email = input.value.trim()
+      const formEl = form || this.shadow.querySelector('form')
+      const formData = new FormData(formEl)
+      const formDataJson = {}
+
+      for (const [key, value] of formData.entries()) {
+        formDataJson[key] = value !== '' ? value : null
+      }
 
       try {
         const response = await fetch('/api/customer/customers', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formDataJson)
         })
 
-        if (!response.ok) {
-          // si es error 422 (validación), lo mostramos
-          if (response.status === 422) {
-            const data = await response.json()
-            this.showValidationErrors(data.message)
-            return
+        if (!response.ok) throw response
+
+        store.dispatch(showFormElement({
+          endPoint: '/api/customer/customers',
+          data: null
+        }))
+
+        store.dispatch(refreshTable('/api/customer/customers'))
+        this.resetForm?.()
+
+        document.dispatchEvent(new CustomEvent('notice', {
+          detail: {
+            message: 'Datos guardados correctamente',
+            type: 'success'
           }
-          throw new Error('Error en la suscripción')
+        }))
+      } catch (error) {
+        if (error.status === 422) {
+          const data = await error.json()
+          this.showValidationErrors(data.message)
+
+          document.dispatchEvent(new CustomEvent('notice', {
+            detail: {
+              message: 'Los datos enviados no son válidos, corríjalo.',
+              type: 'error'
+            }
+          }))
         }
 
-        const result = await response.json()
-        console.log('Suscripción correcta:', result)
-        form.reset()
-        this.closeValidationErrors()
-      } catch (error) {
-        console.log('Error al enviar la suscripción:', error)
+        if (error.status === 500) {
+          document.dispatchEvent(new CustomEvent('notice', {
+            detail: {
+              message: 'No se han podido guardar los datos',
+              type: 'error'
+            }
+          }))
+        }
       }
     })
+
+    // al escribir, quitamos borde rojo y si no quedan errores visibles, ocultamos panel
+    if (input) {
+      input.addEventListener('input', () => {
+        const container = input.closest('.form-element-input')
+        if (container) container.classList.remove('error')
+
+        const ul = this.shadow.querySelector('.validation-errors ul')
+        if (ul && ul.children.length <= 1) this.closeValidationErrors()
+      })
+    }
+
+    // submit del formulario (por si se usa Enter)
+    if (form) {
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault()
+
+        const email = (input ? input.value : '').trim()
+
+        try {
+          const response = await fetch('/api/customer/customers', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email })
+          })
+
+          if (!response.ok) {
+            // si es error 422 (validación), lo mostramos
+            if (response.status === 422) {
+              const data = await response.json()
+              this.showValidationErrors(data.message)
+              return
+            }
+            throw new Error('Error en la suscripción')
+          }
+
+          const result = await response.json()
+          console.log('Suscripción correcta:', result)
+          form.reset()
+          this.closeValidationErrors()
+        } catch (error) {
+          console.log('Error al enviar la suscripción:', error)
+        }
+      })
+    }
 
     // botón cerrar errores
     this.shadow.addEventListener('click', (event) => {
@@ -389,7 +461,7 @@ class SubscriptionForm extends HTMLElement {
 
   // === AÑADIDO ===
   showValidationErrors (errors) {
-  // Normaliza el formato: acepta string o array
+    // Normaliza el formato: acepta string o array
     const messages = Array.isArray(errors)
       ? errors
       : [{ message: String(errors || 'Ha ocurrido un error'), path: 'email' }]
