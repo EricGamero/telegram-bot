@@ -18,8 +18,14 @@ const options = {
 
 app.use('/api', createProxyMiddleware(options));
 
+options.target = 'http://localhost:5172';
+app.use('/admin/login', createProxyMiddleware(options));
+
 options.target = 'http://localhost:5171';
 app.use('/admin', createProxyMiddleware(options));
+
+options.target = 'http://localhost:5178';
+app.use('/cuenta', createProxyMiddleware(options));
 
 options.target = 'http://localhost:5177';
 app.use('/', createProxyMiddleware(options));

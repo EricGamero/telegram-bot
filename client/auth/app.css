@@ -1,0 +1,8 @@
+body {
+  margin: 0;
+  max-height: 100vh;
+  background: linear-gradient(135deg, #ff7e5f, #feb47b); 
+  display:flex;
+  flex-direction:column;
+  gap:10rem;
+}

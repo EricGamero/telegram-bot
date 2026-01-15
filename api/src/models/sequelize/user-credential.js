@@ -40,7 +40,7 @@ module.exports = function (sequelize, DataTypes) {
         }
       },
       lastPasswordChange: {
-        type: DataTypes.STRING,
+        type: DataTypes.DATE,
         allowNull: false
       },
       createdAt: {

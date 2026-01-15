@@ -1,5 +1,6 @@
 const services = {
-  telegramService: new (require('../services/telegram-service'))(process.env.TELEGRAM_ADMIN_TOKEN, process.env.TELEGRAM_ADMIN_CHAT_ID)
+  telegramService: new (require('../services/telegram-service'))(process.env.TELEGRAM_ADMIN_TOKEN, process.env.TELEGRAM_ADMIN_CHAT_ID),
+  authorizationService: new (require('../services/authorization-service'))()
 }
 
 function createServiceMiddleware (serviceName) {

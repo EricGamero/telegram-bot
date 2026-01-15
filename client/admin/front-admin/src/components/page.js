@@ -17,6 +17,24 @@ class PageComponent extends HTMLElement {
   render () {
     const path = window.location.pathname
     this.getTemplate(path)
+    this.checkSignin()
+  }
+
+  async checkSignin () {
+    try {
+      const result = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/user/check-signin`, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+
+      if (result.ok) {
+        const data = await result.json()
+        window.location.href = data.redirection
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   async getTemplate (path) {

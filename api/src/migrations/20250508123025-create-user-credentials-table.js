@@ -24,7 +24,7 @@ module.exports = {
         allowNull: false
       },
       lastPasswordChange: {
-        type: Sequelize.STRING,
+        type: Sequelize.DATE,
         allowNull: false
       },
       createdAt: {

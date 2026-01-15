@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('UserActiovationToken',
+  const Model = sequelize.define('UserActivationToken',
     {
       id: {
         type: DataTypes.INTEGER,

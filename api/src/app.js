@@ -1,26 +1,47 @@
 const express = require('express')
 const app = express()
+
 const errorHandler = require('./middlewares/error-handler')
 const routes = require('./routes')
 const userAgentMiddleware = require('./middlewares/user-agent')
 const userTrackingMiddleware = require('./middlewares/user-tracking')
 const exposeServiceMiddleware = require('./middlewares/expose-services')
-const IORedis = require('ioredis')
-const redisClient = new IORedis(process.env.REDIS_URL)
-const subscriberClient = new IORedis(process.env.REDIS_URL)
+
+const { createClient } = require('redis')
+const session = require('express-session')
+const { RedisStore } = require('connect-redis')
+const redisClient = createClient({ url: process.env.REDIS_URL })
+redisClient.connect().catch(console.error)
+const subscriberClient = redisClient.duplicate()
+subscriberClient.connect().catch(console.error)
 require('./events')(redisClient, subscriberClient)
 
 app.use((req, res, next) => {
   req.redisClient = redisClient
   next()
 })
+const sessionConfig = session({
+  store: new RedisStore({ client: redisClient }),
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    domain: new URL(process.env.API_URL).hostname,
+    path: '/',
+    sameSite: 'Lax',
+    maxAge: 1000 * 60 * 3600
+  }
+})
 
+app.use(sessionConfig)
 app.use(userAgentMiddleware)
 app.use(express.json({ limit: '10mb', extended: true }))
 app.use(userTrackingMiddleware)
 app.use(...Object.values(exposeServiceMiddleware))
-// todo lo que va antes de (api, routes) se carga antes de llamar al enrutador
+
 app.use('/api', routes)
 app.use(errorHandler)
-// todo lo que va después es cuando se termina la llamada/consulta
+
 module.exports = app
