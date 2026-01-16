@@ -26,12 +26,10 @@ const sessionConfig = session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    domain: new URL(process.env.API_URL).hostname,
-    path: '/',
-    sameSite: 'Lax',
-    maxAge: 1000 * 60 * 3600
+    secure: false,
+    sameSite: 'lax',
+    maxAge: 1000 * 60 * 60
   }
 })
 

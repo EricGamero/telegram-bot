@@ -34,12 +34,12 @@ exports.signin = async (req, res) => {
       })
     }
 
-    req.session.user = { id: data.id, admin: true }
+    req.session.user = { id: data.id, admin: false }
 
     console.log(req.session)
 
     res.status(200).send({
-      redirection: '/admin'
+      redirection: '/'
     })
   } catch (err) {
     console.log(err)
@@ -50,11 +50,11 @@ exports.signin = async (req, res) => {
 exports.checkSignin = (req, res) => {
   if (req.session.user) {
     res.status(200).send({
-      redirection: '/admin'
+      redirection: '/'
     })
   } else {
     res.status(401).send({
-      redirection: '/admin/login'
+      redirection: '/login'
     })
   }
 }
@@ -77,4 +77,24 @@ exports.reset = async (req, res) => {
     console.log(err)
     res.status(500).send({ message: err.message || 'Algún error ha surgido al recuperar los datos.' })
   })
+}
+
+exports.getProfile = async (req, res) => {
+  try {
+    // Aquí solo devolvemos datos inventados para poder probar el middleware
+    if (!req.session.user) {
+      return res.status(401).send({ message: 'No autorizado', redirection: '/login' })
+    }
+
+    // Datos ficticios de usuario
+    const fakeUser = {
+      name: 'Eric Gamero',
+      email: 'ericgammero@gmail.com'
+    }
+
+    res.status(200).send(fakeUser)
+  } catch (err) {
+    console.log(err)
+    res.status(500).send({ message: 'Error al obtener perfil' })
+  }
 }

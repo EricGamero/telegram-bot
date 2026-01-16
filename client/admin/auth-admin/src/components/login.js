@@ -16,7 +16,8 @@ class Login extends HTMLElement {
       const result = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/user/check-signin`, {
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        credentials: 'include'
       })
 
       if (result.ok) {
@@ -121,6 +122,7 @@ class Login extends HTMLElement {
       try {
         const result = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/user/signin`, {
           method: 'POST',
+          credentials: 'include',
           headers: {
             'Content-Type': 'application/json'
           },

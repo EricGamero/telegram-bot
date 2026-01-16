@@ -27,6 +27,9 @@ app.use('/admin', createProxyMiddleware(options));
 options.target = 'http://localhost:5178';
 app.use('/cuenta', createProxyMiddleware(options));
 
+options.target = 'http://localhost:5174';
+app.use('/login', createProxyMiddleware(options));
+
 options.target = 'http://localhost:5177';
 app.use('/', createProxyMiddleware(options));
 

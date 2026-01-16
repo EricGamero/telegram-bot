@@ -39,7 +39,7 @@ exports.signin = async (req, res) => {
     console.log(req.session)
 
     res.status(200).send({
-      redirection: '/admin'
+      redirection: '/admin/usuarios'
     })
   } catch (err) {
     console.log(err)
@@ -50,7 +50,7 @@ exports.signin = async (req, res) => {
 exports.checkSignin = (req, res) => {
   if (req.session.user) {
     res.status(200).send({
-      redirection: '/admin'
+      redirection: '/admin/usuarios'
     })
   } else {
     res.status(401).send({

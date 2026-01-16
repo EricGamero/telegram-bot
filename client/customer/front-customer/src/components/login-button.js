@@ -51,7 +51,7 @@ class LoginButtonComponent extends HTMLElement {
 
     button.addEventListener('click', () => {
       // Redirección frontend
-      window.location.href = '/cuenta/login'
+      window.location.href = '/login'
     })
   }
 }

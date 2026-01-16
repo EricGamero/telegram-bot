@@ -13,7 +13,7 @@ class Login extends HTMLElement {
 
   async checkSignin () {
     try {
-      const result = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/user/check-signin`, {
+      const result = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/customer/check-signin`, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -119,8 +119,9 @@ class Login extends HTMLElement {
       const formDataJson = Object.fromEntries(formData.entries())
 
       try {
-        const result = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/customer/signin`, {
+        const result = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/customer/check-signin`, {
           method: 'POST',
+          credentials: 'include',
           headers: {
             'Content-Type': 'application/json'
           },
