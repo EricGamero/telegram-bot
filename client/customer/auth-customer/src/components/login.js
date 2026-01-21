@@ -1,22 +1,23 @@
 class Login extends HTMLElement {
-  constructor () {
+  constructor() {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
     this.data = {}
   }
 
-  connectedCallback () {
+  connectedCallback() {
     this.checkSignin()
     this.loadData()
     this.render()
   }
 
-  async checkSignin () {
+  async checkSignin() {
     try {
       const result = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/customer/check-signin`, {
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        credentials: 'include'
       })
 
       if (result.ok) {
@@ -28,13 +29,13 @@ class Login extends HTMLElement {
     }
   }
 
-  loadData () {
+  loadData() {
     this.data = {
       buttonText: 'Entrar'
     }
   }
 
-  addEvents () {
+  addEvents() {
     const form = this.shadow.querySelector('form')
 
     form.addEventListener('submit', (e) => {
@@ -48,7 +49,7 @@ class Login extends HTMLElement {
     })
   }
 
-  render () {
+  render() {
     this.shadow.innerHTML =
       /* html */
       `
@@ -93,6 +94,7 @@ class Login extends HTMLElement {
         <form>
           <input 
             id="email"
+            name="email"
             type="email"
             placeholder="Email"
             required
@@ -100,6 +102,7 @@ class Login extends HTMLElement {
 
           <input 
             id="password"
+            name="password"
             type="password"
             placeholder="Contraseña"
             required

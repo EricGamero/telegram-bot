@@ -17,7 +17,7 @@ class Login extends HTMLElement {
         headers: {
           'Content-Type': 'application/json'
         },
-        credentials: 'include'
+
       })
 
       if (result.ok) {
@@ -94,6 +94,7 @@ class Login extends HTMLElement {
         <form>
           <input 
             id="email"
+            name="email"
             type="email"
             placeholder="Email"
             required
@@ -101,6 +102,7 @@ class Login extends HTMLElement {
 
           <input 
             id="password"
+            name="password"
             type="password"
             placeholder="Contraseña"
             required

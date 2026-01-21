@@ -14,26 +14,49 @@ class PageComponent extends HTMLElement {
     this.render()
   }
 
-  render () {
-    const path = window.location.pathname
-    this.getTemplate(path)
-    this.checkSignin()
+  async render () {
+    const isAuthenticated = await this.checkSignin()
+
+    if (isAuthenticated) {
+      const path = window.location.pathname
+      this.getTemplate(path)
+    }
   }
 
   async checkSignin () {
     try {
-      const result = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/user/check-signin`, {
+      const url = `${import.meta.env.VITE_API_URL}/api/auth/user/check-signin`
+
+      const result = await fetch(url, {
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        credentials: 'include'
       })
 
-      if (result.ok) {
-        const data = await result.json()
-        window.location.href = data.redirection
+      if (result.status === 401) {
+        let data
+        try {
+          data = await result.json()
+        } catch (e) {
+          data = { redirection: '/admin/login' }
+        }
+
+        window.location.href = data.redirection || '/admin/login'
+        return false
       }
+
+      // If status is not 200 (and not 401 handled above), treat as error/unauthorized to be safe
+      if (!result.ok) {
+        window.location.href = '/admin/login'
+        return false
+      }
+
+      return true
     } catch (error) {
-      console.log(error)
+      console.error('Auth check failed:', error)
+      window.location.href = '/admin/login'
+      return false
     }
   }
 

@@ -9,7 +9,7 @@ const SentEmail = sequelizeDb.SentEmail
 const EmailError = sequelizeDb.EmailError
 
 module.exports = class EmailService {
-  constructor (type) {
+  constructor(type) {
     if (type === 'smtp') {
       this.email = process.env.EMAIL
 
@@ -48,7 +48,7 @@ module.exports = class EmailService {
     }
   }
 
-  getAccessToken () {
+  getAccessToken() {
     const myOAuth2Client = new OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
@@ -64,7 +64,7 @@ module.exports = class EmailService {
     return myAccessToken
   }
 
-  sendEmail (user, userType, template, data, attachments = []) {
+  sendEmail(user, userType, template, data, attachments = []) {
     try {
       if (!user.language) user.language = 'es'
 
@@ -126,7 +126,7 @@ module.exports = class EmailService {
     }
   }
 
-  emailReaded (uuid) {
+  emailReaded(uuid) {
     SentEmail.update(
       {
         readedAt: new Date()

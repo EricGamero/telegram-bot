@@ -40,12 +40,12 @@ module.exports = function (sequelize, DataTypes) {
         }
       },
       lastPasswordChange: {
-        type: DataTypes.STRING,
+        type: DataTypes.DATE,
         allowNull: false
       },
       createdAt: {
         type: DataTypes.DATE,
-        get () {
+        get() {
           return this.getDataValue('createdAt')
             ? this.getDataValue('createdAt').toISOString().split('T')[0]
             : null
@@ -53,33 +53,33 @@ module.exports = function (sequelize, DataTypes) {
       },
       updatedAt: {
         type: DataTypes.DATE,
-        get () {
+        get() {
           return this.getDataValue('updatedAt')
             ? this.getDataValue('updatedAt').toISOString().split('T')[0]
             : null
         }
       }
     }, {
-      sequelize,
-      // modelo se conecta a base dato conexión
-      tableName: 'customer_credentials',
-      // a que tabla de la base datos debe apuntar el modelo
-      timestamps: true,
-      // cada vez que guarde o actualize un dato registre la fecha y la hora en estos campos createdat updatedat a
-      paranoid: true,
-      // que utilize el modo paranoico es no borrar datos por el campo deletedat y así solo te enseña los datos que no tienen el modo
-      // paranoico activaod
-      indexes: [
-        {
-          name: 'PRIMARY',
-          unique: true,
-          using: 'BTREE',
-          fields: [
-            { name: 'id' }
-          ]
-        }
-      ]
-    }
+    sequelize,
+    // modelo se conecta a base dato conexión
+    tableName: 'customer_credentials',
+    // a que tabla de la base datos debe apuntar el modelo
+    timestamps: true,
+    // cada vez que guarde o actualize un dato registre la fecha y la hora en estos campos createdat updatedat a
+    paranoid: true,
+    // que utilize el modo paranoico es no borrar datos por el campo deletedat y así solo te enseña los datos que no tienen el modo
+    // paranoico activaod
+    indexes: [
+      {
+        name: 'PRIMARY',
+        unique: true,
+        using: 'BTREE',
+        fields: [
+          { name: 'id' }
+        ]
+      }
+    ]
+  }
   )
 
   Model.associate = function (models) {

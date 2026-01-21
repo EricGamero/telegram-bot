@@ -1,19 +1,17 @@
 class UserProfileComponent extends HTMLElement {
-  constructor () {
+  constructor() {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
     this.user = { name: '', email: '' }
   }
 
-  connectedCallback () {
+  connectedCallback() {
     this.loadProfile()
   }
 
-  async loadProfile () {
+  async loadProfile() {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/customer/profile`, {
-        credentials: 'include' // importante para enviar cookies de sesión
-      })
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/customer/customers`)
 
       if (res.ok) {
         this.user = await res.json()
@@ -28,7 +26,7 @@ class UserProfileComponent extends HTMLElement {
     }
   }
 
-  render () {
+  render() {
     const name = this.user.name || 'Usuario'
     const email = this.user.email || ''
 

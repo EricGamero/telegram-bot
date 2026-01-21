@@ -16,3 +16,21 @@ exports.create = async (req, res, next) => {
     next(err)
   }
 }
+
+exports.findOne = async (req, res, next) => {
+  try {
+    const id = req.session.customer.id
+    const data = await CustomerSQL.findByPk(id)
+
+    if (!data) {
+      const err = new Error()
+      err.message = `No se puede encontrar el elemento con la id=${id}.`
+      err.statusCode = 404
+      throw err
+    }
+
+    res.status(200).send(data)
+  } catch (err) {
+    next(err)
+  }
+}

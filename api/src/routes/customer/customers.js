@@ -2,7 +2,9 @@
 const express = require('express')
 const router = express.Router()
 const controller = require('../../controllers/customer/customer-controller.js')
+const authCustomerCookie = require('../../middlewares/auth-customer-cookie.js')
 
-router.post('/', controller.create) // POST /api/customers
+router.post('/', controller.create)
+router.get('/', authCustomerCookie, controller.findOne)
 
 module.exports = router

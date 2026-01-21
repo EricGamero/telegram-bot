@@ -26,7 +26,7 @@ module.exports = class AuthorizationService {
     const expirationDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
 
     await entity.tokenModel.create({
-      [`${type}Id`]: id,
+      [`${type.charAt(0).toUpperCase() + type.slice(1)}Id`]: id,
       token,
       expirationDate,
       used: false

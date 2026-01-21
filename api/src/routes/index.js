@@ -39,6 +39,6 @@ router.use('/customer/customers', require('./customer/customers'))
 
 router.use('/auth', require('./auth/auth-activate'))
 router.use('/auth/user', require('./auth/auth-users'))
-router.use('/auth/customer', require('./auth-customer/auth-customers'))
+router.use('/auth/customer', require('./auth/auth-customers'))
 
 module.exports = router
