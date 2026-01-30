@@ -12,7 +12,60 @@ class TelegramService {
     this.bot = new TelegramBot(this.token, { polling: true })
     this.sessionAnchors = new Map()
 
-    this.bot.on('message', (msg) => this.handleGroupMessage(msg))
+    this.bot.on('message', (msg) => {
+      if (msg.chat.type === 'private') {
+        this.handlePrivateMessage(msg)
+      } else {
+        this.handleGroupMessage(msg)
+      }
+    })
+  }
+
+  async handlePrivateMessage (msg) {
+    const sequelizeDb = require('../models/sequelize')
+    const BotVerification = sequelizeDb.BotVerification
+    const Customer = sequelizeDb.Customer
+
+    const existingVerification = await BotVerification.findOne({
+      where: { telegramUserId: msg.from.id }
+    })
+
+    if (existingVerification) {
+      const customer = await Customer.findOne({ where: { email: existingVerification.email } })
+      const customerName = customer ? customer.name : 'Usuario'
+
+      this.bot.sendMessage(msg.chat.id, `Hola de nuevo ${customerName}, ¿en qué puedo ayudarte?`)
+      return
+    }
+
+    if (msg.text && msg.text.startsWith('/login')) {
+      const args = msg.text.split(' ')
+      if (args.length === 2 && /^\S+@\S+\.\S+:\d{6}$/.test(args[1])) {
+        const [email, code] = args[1].split(':')
+
+        const verification = await BotVerification.findOne({
+          where: {
+            email,
+            verificationCode: code
+          }
+        })
+
+        if (verification) {
+          await verification.update({ telegramUserId: msg.from.id })
+
+          const customer = await Customer.findOne({ where: { email } })
+          const customerName = customer ? customer.name : 'Usuario'
+
+          this.bot.sendMessage(msg.chat.id, `¡Hola ${customerName}! Tu cuenta ha sido verificada correctamente. Ahora puedes hablar conmigo.`)
+        } else {
+          this.bot.sendMessage(msg.chat.id, 'Código de verificación o correo incorrecto. Inténtalo de nuevo.')
+        }
+      } else {
+        this.bot.sendMessage(msg.chat.id, 'Formato incorrecto. Usa: /login email:código (ej: /login test@example.com:123456)')
+      }
+    } else {
+      this.bot.sendMessage(msg.chat.id, 'Para poder usar este bot, debes iniciar sesión. Escribe el comando: /login email:código')
+    }
   }
 
   async escalateToHuman (threadId, preview) {
